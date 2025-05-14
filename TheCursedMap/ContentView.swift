@@ -3,7 +3,7 @@
 //  TheCursedMap
 //
 //  Created by Alexander Malmqvist on 2025-05-14.
-//
+// hej
 
 import SwiftUI
 
