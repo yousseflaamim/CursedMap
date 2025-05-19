@@ -12,7 +12,9 @@ struct StartView: View {
     @State var showInfo = false
     
     var body: some View {
-        ZStack{
+        
+        NavigationStack {
+         ZStack{
             // Background Color, maybe change later?
             Color(red: 120/550, green: 120/550, blue: 120/550)
                 .ignoresSafeArea()
@@ -24,10 +26,10 @@ struct StartView: View {
                     .padding()
                 Spacer()
                 
-                Button("Start"){
+                Button("Start Map"){
                     // Start Game logic
                 }
-                .font(.system(size: 24, weight: .bold, design: .serif))
+                .font(.system(size: 24, weight: .medium, design: .serif))
                 .frame(width:280, height: 60)
                 .background(Color(.darkGray))
                 .foregroundColor(.black)
@@ -37,18 +39,20 @@ struct StartView: View {
                         .stroke(Color.black, lineWidth: 1)
                 )
                 .padding(.bottom)
-                Button("Treasures"){
-                    // Show tresures logic
-                }
-                .font(.system(size: 24, weight: .bold, design: .serif))
-                .frame(width:280, height: 60)
-                .background(Color(.darkGray))
-                .foregroundColor(.black)
-                .cornerRadius(30)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30)
-                        .stroke(Color.black, lineWidth: 1)
-                )
+                
+                NavigationLink(destination: TreasureView()) {
+                                       Text("Your Treasures")
+                                           .font(.system(size: 24, weight: .medium, design: .serif))
+                                           .frame(width: 280, height: 60)
+                                           .background(Color(.darkGray))
+                                           .foregroundColor(.black)
+                                           .cornerRadius(30)
+                                           .overlay(
+                                               RoundedRectangle(cornerRadius: 30)
+                                                   .stroke(Color.black, lineWidth: 1)
+                                           )
+                                   }
+            
                 Spacer()
                 
                 HStack{
@@ -71,34 +75,35 @@ struct StartView: View {
                                     .foregroundColor(.black)
                                     .padding(30)
                             }
-                           
+                            
                         }
                     }
                     Spacer()
                     Button(action: {
-                                       // Show Profile logic
-                                   }) {
-                    VStack {
-                        ZStack {
-                            Circle()
-                             .fill(Color(.darkGray))
-                             .frame(width: 60, height: 60)
-                             .overlay(
-                                 RoundedRectangle(cornerRadius: 30)
-                                    .stroke(Color.black, lineWidth: 0.5)
-                             )
-                                                      
-                            Image(systemName: "gearshape")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.black)
-                                .padding(30)
+                        // Show Profile logic
+                    }) {
+                        VStack {
+                            ZStack {
+                                Circle()
+                                    .fill(Color(.darkGray))
+                                    .frame(width: 60, height: 60)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 30)
+                                            .stroke(Color.black, lineWidth: 0.5)
+                                    )
+                                
+                                Image(systemName: "gearshape")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.black)
+                                    .padding(30)
                             }
                         }
                     }
                 }
             }
+        }
             
             // Popup for info about app, when user presser info button
             if showInfo {
