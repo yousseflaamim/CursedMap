@@ -10,7 +10,7 @@ import SwiftUI
 struct TreasureView: View {
     var body: some View {
         ZStack{
-            Color(red: 120/550, green: 120/550, blue: 120/550)
+         Color("GrayBlack")
                 .ignoresSafeArea()
             VStack{
                 HStack{
@@ -21,14 +21,22 @@ struct TreasureView: View {
                         .padding()
                 }
                 Spacer()
+                
                 List{
                     HStack{
                         Image("open-chest1")
                         Text("Första kistan öpnnad nära göta ....")
+                            .font(.system(size: 16, weight: .medium, design: .serif))
                     }
+                    .listRowBackground(Color.gray)
+                    .padding()
+                    
                 }
-                .listRowBackground(Color(red: 120/255, green: 120/255, blue: 120/255))
-                .background(Color(red: 120/550, green: 120/550, blue: 120/550))
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"),Color("Gray"), Color("GrayBlack")]),
+                                   startPoint: .top,
+                                   endPoint: .bottom)
+                )
                 .scrollContentBackground(.hidden)
               
             }
