@@ -98,9 +98,7 @@ struct StartView: View {
                         Spacer()
 
                         // profile button
-                        Button(action: {
-                            // Show Profile logic here
-                        }) {
+                        NavigationLink(destination: ProfileView()) {
                             ZStack {
                                 Circle()
                                     .fill(
