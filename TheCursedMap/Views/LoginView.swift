@@ -44,12 +44,12 @@ struct LoginView: View {
                             .padding(.bottom)
                         
                         CustomButton(label: "Login") {
-                            onLoginSuccess()
-//                            viewModel.login { success in
-//                                if success {
-//                                    onLoginSuccess()
-//                                }
-//                            }
+//                            onLoginSuccess()
+                            viewModel.login { success in
+                                if success {
+                                    onLoginSuccess()
+                                }
+                            }
                         }
                         .frame(width: 180)
                     }
@@ -91,6 +91,7 @@ struct LoginView: View {
                 }
             }
         }
+        .tint(.black)
     }
 }
 
