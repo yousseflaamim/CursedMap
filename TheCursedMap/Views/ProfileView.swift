@@ -9,7 +9,10 @@ import SwiftUI
 
 struct ProfileView: View {
     
-  @State var showEditSheet = false
+    @State var showAlertDelete = false
+    @State var showEditSheet = false
+    @State private var deleteErrorMessage: String? = nil
+    @StateObject var profileViewModel = ProfileViewModel()
     
     var body: some View {
         
@@ -28,11 +31,11 @@ struct ProfileView: View {
                     Image("profile-image")
                         .padding()
                     VStack{
-                        Text("Name")
+                        Text(profileViewModel.name)
                             .font(.system(size: 24, weight: .medium, design: .serif))
                             .foregroundColor(.gray)
                             .padding(.bottom)
-                        Text("Email")
+                        Text(profileViewModel.email)
                             .font(.system(size: 18, weight: .medium, design: .serif))
                             .foregroundColor(.gray)
                     }
@@ -50,21 +53,36 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal,20)
                     Button(action: {
-                        
-                        // Logik för att radera konto
-                        
+                        showAlertDelete = true
                     }) {
                             Image(systemName: "trash")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 35, height: 35)
                                 .foregroundColor(.gray)
+                                .alert("Vill du radera ditt konto och allt innehåll?", isPresented: $showAlertDelete) {
+                                    Button("Radera", role: .destructive) {
+                                        profileViewModel.deleteAccount { result in
+                                            switch result {
+                                            case .success:
+                                                profileViewModel.signOut()
+                                                print("Account deleted")
+                                                // user logs out
+                                            case .failure(let error):
+                                                deleteErrorMessage = error.localizedDescription
+                                            }
+                                        }
+                                    }
+                                    Button("Avbryt", role: .cancel) { }
+                                } message: {
+                                    Text("Det går inte att ångra, all data kommer raderas.")
+                                }
                         
                     }
                     .padding(.horizontal,60)
                     Button(action: {
                         
-                        // logik för att logga ut
+                        profileViewModel.signOut()
                         
                     }) {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
