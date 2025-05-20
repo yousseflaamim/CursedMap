@@ -13,6 +13,7 @@ protocol AuthServiceProtocol {
     func register(email: String, password: String, displayName: String, completion: @escaping (Result<User, Error>) -> Void)
     func updateDisplayName(_ name: String, completion: @escaping (Result<Void, Error>) -> Void)
     func uploadProfileImage(_ imageData: Data, completion: @escaping (Result<String, Error>) -> Void)
+    func resetPassword(email: String, completion: @escaping (Result<Void, Error>) -> Void)
     func logout()
     func currentUser() -> User?
 }
