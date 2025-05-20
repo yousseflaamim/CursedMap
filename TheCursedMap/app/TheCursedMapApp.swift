@@ -16,7 +16,7 @@ struct TheCursedMapApp: App {
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
-                //StartView()
+                StartView()
             } else {
                 LoginView {
                     isLoggedIn = true
