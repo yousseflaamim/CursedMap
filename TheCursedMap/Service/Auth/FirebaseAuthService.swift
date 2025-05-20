@@ -11,57 +11,72 @@ import FirebaseAuth
 import FirebaseStorage
 
 class FirebaseAuthService: AuthServiceProtocol {
-    func login(email: String, password: String, completion: @escaping (Result< User, Error>) -> Void) {
+    
+    // MARK: - Login
+    func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let user = result?.user {
-                let appUser = User(
-                    id: user.uid,
-                    email: user.email ?? "",
-                    displayName: user.displayName ?? "",
-                )
-                completion(.success(appUser))
+                return
             }
+            
+            guard let firebaseUser = result?.user,
+                  let user = User(from: firebaseUser) else {
+                completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "User conversion failed."])))
+                return
+            }
+            
+            completion(.success(user))
         }
     }
-
+    
+    // MARK: - Register
     func register(email: String, password: String, displayName: String, completion: @escaping (Result<User, Error>) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 completion(.failure(error))
-            } else if let user = result?.user {
-                let changeRequest = user.createProfileChangeRequest()
-                changeRequest.displayName = displayName
-                changeRequest.commitChanges { _ in
-                    let appUser = User(
-                        id: user.uid,
-                        email: user.email ?? "",
-                        displayName: displayName,
-                    )
-                    completion(.success(appUser))
+                return
+            }
+            
+            guard let user = result?.user else {
+                completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "User creation failed."])))
+                return
+            }
+            
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = displayName
+            changeRequest.commitChanges { error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
                 }
+                
+                guard let newUser = User(from: user) else {
+                    completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "User conversion failed."])))
+                    return
+                }
+                
+                completion(.success(newUser))
             }
         }
     }
-
+    
+    // MARK: - Logout
     func logout() {
         try? Auth.auth().signOut()
     }
-
+    
+    // MARK: - Get Current User
     func currentUser() -> User? {
-        guard let user = Auth.auth().currentUser else { return nil }
-        return User(
-            id: user.uid,
-            email: user.email ?? "",
-            displayName: user.displayName ?? "",
-        )
+        guard let firebaseUser = Auth.auth().currentUser else { return nil }
+        return User(from: firebaseUser)
     }
     
-    // MARK: - New Methods
+    
+    // MARK: - Update Display Name
     func updateDisplayName(_ name: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let user = Auth.auth().currentUser else {
-            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])))
+            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user logged in."])))
             return
         }
         
@@ -75,10 +90,23 @@ class FirebaseAuthService: AuthServiceProtocol {
             }
         }
     }
+    
+    // MARK: rest password
+    func resetPassword(email: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: email) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
 
+    
+    // MARK: - Upload Profile Image
     func uploadProfileImage(_ imageData: Data, completion: @escaping (Result<String, Error>) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
-            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user logged in"])))
+            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user logged in."])))
             return
         }
         
