@@ -10,21 +10,30 @@ import MapKit
 
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
-    
+    @State private var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+        span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
+    )
+
     var body: some View {
         ZStack {
-            if let region = locationManager.region {
-                Map(coordinateRegion: Binding(
-                    get: { region },
-                    set: { locationManager.region = $0 }
-                ), showsUserLocation: true)
+            Map(coordinateRegion: $region, showsUserLocation: true)
                 .edgesIgnoringSafeArea(.all)
-            } else {
+            
+            if locationManager.userLocation == nil {
                 ProgressView("Loading map...")
             }
         }
         .onAppear {
             locationManager.startLocationUpdates()
+        }
+        .onReceive(locationManager.$userLocation) { location in
+            if let location = location {
+                region = MKCoordinateRegion(
+                    center: location,
+                    span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
+                )
+            }
         }
     }
 }

@@ -14,7 +14,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     
     @Published var userLocation: CLLocationCoordinate2D?
-    @Published var region: MKCoordinateRegion?
     
     override init() {
         super.init()
@@ -30,11 +29,6 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first?.coordinate else { return }
         userLocation = location
-        
-        region = MKCoordinateRegion(
-            center: location,
-            span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
-        )
         
         print("Plats uppdaterad \(location)")
     }
