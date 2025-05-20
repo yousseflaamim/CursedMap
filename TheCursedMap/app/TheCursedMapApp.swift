@@ -15,15 +15,13 @@ struct TheCursedMapApp: App {
     
     var body: some Scene {
         WindowGroup {
-            GameView()
-            /*
             if isLoggedIn {
                 //StartView()
             } else {
                 LoginView {
                     isLoggedIn = true
                 }
-            }*/
+            }
         }
     }
 }
