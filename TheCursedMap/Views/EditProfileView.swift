@@ -10,6 +10,7 @@ import SwiftUI
 struct EditProfileView: View {
     
     @Environment(\.dismiss) var dismiss
+    @StateObject var profileViewModel = ProfileViewModel()
     @State private var newUsername: String = ""
     
     var body: some View {
@@ -25,7 +26,7 @@ struct EditProfileView: View {
                 // logik för att eventuellt ändra profilbild.
                 Image("profile-image")
                     .padding(.bottom, 20)
-                Text("Name")
+                Text(profileViewModel.name)
                     .font(.system(size: 24, weight: .medium, design: .serif))
                     .foregroundColor(.black)
                     .padding(.bottom, 50)
