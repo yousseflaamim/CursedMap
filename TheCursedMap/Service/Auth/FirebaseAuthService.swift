@@ -101,6 +101,22 @@ class FirebaseAuthService: AuthServiceProtocol {
             }
         }
     }
+    // MARK: - Delete Account
+    func deleteAccount(completion: @escaping (Result<Bool, Error>) -> Void) {
+        guard let user = Auth.auth().currentUser else {
+            completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No user is currently logged in."])))
+            return
+        }
+
+        user.delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(true))
+            }
+        }
+    }
+
 
     
     // MARK: - Upload Profile Image

@@ -15,51 +15,88 @@ struct RegisterView: View {
     
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"),
-                                                       Color("Gray"),
-                                                       Color("GrayBlack")]),
-                           startPoint: .top,
-                           endPoint: .bottom)
-            .ignoresSafeArea()
+            // Background
+            LinearGradient(gradient: Gradient(colors: [
+                Color("GrayBlack"),
+                Color("Gray"),
+                Color("GrayBlack")
+            ]), startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+            
             VStack {
+                // Logo
                 Image("CursedMapLogo")
                     .resizable()
                     .frame(width: 300, height: 300)
                     .padding(.top, -100)
                     .padding(.bottom, -20)
-                VStack {
-                    Text("Create Account")
-                        .font(.largeTitle)
-                }
+                
+                // Title
+                Text("Create Account")
+                    .font(.largeTitle)
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 10)
+                
+                // Error Message
                 if !viewModel.errorMessage.isEmpty {
                     Text(viewModel.errorMessage)
-                        .foregroundStyle(.red)
+                        .foregroundColor(.red)
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal)
                         .padding(.bottom, 10)
                 }
                 
-                VStack {
-                    CustomTextField(text: $viewModel.name, placeHolder: "Name", image: "person")
+                // Form
+                VStack(spacing: 15) {
+                    CustomTextField(text: $viewModel.displayName,
+                                    placeHolder: "Name",
+                                    image: "person")
                     
-                    CustomTextField(text: $viewModel.email, placeHolder: "Email", image: "envelope")
+                    CustomTextField(text: $viewModel.email,
+                                    placeHolder: "Email",
+                                    image: "envelope")
                     
-                    CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
+                    CustomTextField(text: $viewModel.password,
+                                    placeHolder: "Password",
+                                    image: "lock",
+                                    isSecure: true)
                     
-                    CustomTextField(text: $viewModel.confirmPassword, placeHolder: "Confirm Password", image: "lock", isSecure: true)
-                        .padding(.bottom, 30)
-                    
-                    CustomButton(label: "Register") {
-                        viewModel.register { success in
-                            if success {
-                                onLoginSuccess()
-                            }
+                    CustomTextField(text: $viewModel.confirmPassword,
+                                    placeHolder: "Confirm Password",
+                                    image: "lock",
+                                    isSecure: true)
+                }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 30)
+                
+                // Register Button
+                CustomButton(label: viewModel.isLoading ? "Registering..." : "Register") {
+                    viewModel.register { success in
+                        if success {
+                            onLoginSuccess()
                         }
                     }
                 }
-                .padding(30)
+                .disabled(viewModel.isLoading)
+                .frame(width: 180)
+                .padding(.bottom, 10)
+                
+                // Go to Login Page
+                Button(action: {
+                    dismiss()
+                }) {
+                    Text("Already have an account? Log in")
+                        .font(.subheadline)
+                        .underline()
+                        .foregroundColor(.blue)
+                }
+
+                Spacer()
             }
+            .padding()
         }
+        .navigationBarBackButtonHidden(true) 
     }
 }
 

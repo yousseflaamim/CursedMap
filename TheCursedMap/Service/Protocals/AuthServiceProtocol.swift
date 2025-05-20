@@ -8,6 +8,8 @@
 
 import Foundation
 
+import Foundation
+
 protocol AuthServiceProtocol {
     func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
     func register(email: String, password: String, displayName: String, completion: @escaping (Result<User, Error>) -> Void)
@@ -16,4 +18,6 @@ protocol AuthServiceProtocol {
     func resetPassword(email: String, completion: @escaping (Result<Void, Error>) -> Void)
     func logout()
     func currentUser() -> User?
+    func deleteAccount(completion: @escaping (Result<Bool, Error>) -> Void)
 }
+
