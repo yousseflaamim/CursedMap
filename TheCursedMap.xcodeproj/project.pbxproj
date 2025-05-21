@@ -41,7 +41,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		80020C322DDC6FE0000826AB /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */ = {
+		D7F5DAB92DDE60660095E167 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -54,7 +54,7 @@
 		805AE36A2DD46FB700B7A19E /* TheCursedMap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				80020C322DDC6FE0000826AB /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */,
+				D7F5DAB92DDE60660095E167 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */,
 			);
 			path = TheCursedMap;
 			sourceTree = "<group>";
@@ -441,7 +441,6 @@
 				DEVELOPMENT_ASSET_PATHS = "\"TheCursedMap/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TheCursedMap/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -471,7 +470,6 @@
 				DEVELOPMENT_ASSET_PATHS = "\"TheCursedMap/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TheCursedMap/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
