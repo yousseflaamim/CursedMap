@@ -13,8 +13,13 @@ struct ProfileView: View {
     @State var showEditSheet = false
     @State private var deleteErrorMessage: String? = nil
     @StateObject var profileViewModel = ProfileViewModel()
+    @StateObject var treasureViewModel = TreasureViewModel()
     
+  
     var body: some View {
+        // in use of progressView
+        let maxCoinsPerLevel = 100
+        let progress = min(Double(treasureViewModel.coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel), 1.0)
         
         ZStack {
             // Bakground
@@ -26,7 +31,18 @@ struct ProfileView: View {
             .ignoresSafeArea()
             
             VStack {
-            
+                HStack{
+                    Image("open-chest2") // en mindre öppnad kista
+                        .padding()
+                    Text("10") // få in antal öppnade kistor här senare från treasureViewModel
+                        .foregroundColor(.gray)
+                        .padding()
+                    Spacer()
+                        Image("coin1")
+                    Text("100")  // få in antal coins användaren har här senare från treasureViewModel
+                        .foregroundColor(.gray)
+                        .padding(20)
+                }
                 HStack{
                     Image("profile-image")
                         .padding()
@@ -39,7 +55,21 @@ struct ProfileView: View {
                             .font(.system(size: 18, weight: .medium, design: .serif))
                             .foregroundColor(.gray)
                     }
+                   
                 }
+                
+                // ProgressView for Level up
+                VStack(alignment: .leading) {
+                    Text("Level \(treasureViewModel.level)")
+                        .foregroundColor(.yellow)
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+
+                    ProgressView(value: progress)
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .frame(height: 10)
+                        .tint(.yellow)
+                }
+                .padding([.leading, .trailing, .bottom])
                 HStack{
                     Button(action: {
                         showEditSheet = true
@@ -96,10 +126,9 @@ struct ProfileView: View {
                 }
                 
                 List{
-                    
                     HStack{
                         // logik för att eventuellt visa något i en lista. eller något annat, nedan bara ett exempel.
-                        Text("20 Maj:  You opened 2 chests")
+                        Text("Eventuella kommande avatarer här")
                             .font(.system(size: 16, weight: .medium, design: .serif))
                     }
                     .listRowBackground(Color.gray)

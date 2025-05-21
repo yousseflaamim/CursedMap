@@ -111,13 +111,14 @@ struct StartView: View {
                                         Circle()
                                             .stroke(Color.black, lineWidth: 0.5)
                                     )
-                                Image(systemName: "gearshape")
+                                Image(systemName: "person")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
                                     .foregroundColor(.black)
                             }
                         }
+                        
                     }
                     .padding(.horizontal, 50)
                     .padding(.bottom, 30)
@@ -155,7 +156,7 @@ struct StartView: View {
                     .shadow(radius: 10)
                 }
             }
-        }
+        }.tint(.gray)
     }
 }
 
