@@ -14,7 +14,8 @@ import Combine
 import FirebaseFunctions
 
 class FirebaseManager {
-    // MARK: - Singleton Instance
+    
+    // MARK: - Singleton
     static let shared = FirebaseManager()
     
     // MARK: - Firebase Services
@@ -23,31 +24,26 @@ class FirebaseManager {
     let storage: Storage
     let functions: Functions
     
-    // MARK: - Publishers
+    // MARK: - State
     @Published var currentUser: User?
     private var authStateHandler: AuthStateDidChangeListenerHandle?
     
-    // MARK: - Initialization
+    // MARK: - Init
     private init() {
-        // Configure Firebase if not already configured
         if FirebaseApp.app() == nil {
             FirebaseApp.configure()
         }
         
-        // Initialize services
         self.auth = Auth.auth()
         self.db = Firestore.firestore()
         self.storage = Storage.storage()
         self.functions = Functions.functions()
         
-        // Configure Firestore
         configureFirestore()
-        
-        // Set up auth state listener
         setupAuthListener()
     }
     
-    // MARK: - Configuration
+    // MARK: - Firestore Config
     private func configureFirestore() {
         let settings = FirestoreSettings()
         settings.isPersistenceEnabled = true
@@ -55,23 +51,22 @@ class FirebaseManager {
         db.settings = settings
     }
     
+    // MARK: - Auth Listener
     private func setupAuthListener() {
-        authStateHandler = auth.addStateDidChangeListener { [weak self] (_, user) in
-            self?.currentUser = user
+        authStateHandler = auth.addStateDidChangeListener { [weak self] _, firebaseUser in
+            self?.currentUser = firebaseUser.flatMap { User(from: $0) }
         }
     }
     
-    // MARK: - Helper Methods
+    // MARK: - Helpers
     func currentUserId() -> String? {
         auth.currentUser?.uid
     }
     
     func currentUserToken() async throws -> String {
         guard let user = auth.currentUser else {
-            throw NSError(domain: "FirebaseError", code: -1, 
-                         userInfo: [NSLocalizedDescriptionKey: "No authenticated user"])
+            throw NSError(domain: "FirebaseError", code: -1, userInfo: [NSLocalizedDescriptionKey: "No authenticated user"])
         }
-        
         return try await user.getIDToken()
     }
     
@@ -79,7 +74,6 @@ class FirebaseManager {
         try auth.signOut()
     }
     
-    // MARK: - Cleanup
     deinit {
         if let handler = authStateHandler {
             auth.removeStateDidChangeListener(handler)
@@ -87,16 +81,13 @@ class FirebaseManager {
     }
 }
 
-// MARK: - Extensions
+// MARK: - Firestore + Storage References
 extension FirebaseManager {
-    // Firestore reference helpers
+    
     func userDocument(userId: String) -> DocumentReference {
         db.collection("users").document(userId)
     }
     
-    
-    
-    // Storage reference helpers
     func profileImageReference(userId: String) -> StorageReference {
         storage.reference().child("profile_images/\(userId).jpg")
     }
