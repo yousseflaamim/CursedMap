@@ -6,75 +6,58 @@
 //
 
 import Foundation
-import FirebaseAuth
-import FirebaseFirestore
+import Combine
 
 class RegisterViewModel: ObservableObject {
-    @Published var name: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
     @Published var confirmPassword: String = ""
+    @Published var displayName: String = ""
     @Published var errorMessage: String = ""
-    
-    init() {}
-    
+    @Published var isLoading: Bool = false
+    @Published var isRegistered: Bool = false
+
+    private let authService: AuthServiceProtocol
+
+    init(authService: AuthServiceProtocol = FirebaseAuthService()) {
+        self.authService = authService
+    }
+
     func register(completion: @escaping (Bool) -> Void) {
-        guard validate() else {
+        guard validateFields() else {
             completion(false)
             return
         }
-        
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
-            guard let self = self, let userID = result?.user.uid, error == nil else {
-                DispatchQueue.main.async {
-                    self?.errorMessage = error?.localizedDescription ?? "Registration Failed"
+        isLoading = true
+        errorMessage = ""
+
+        authService.register(email: email, password: password, displayName: displayName) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success:
+                    self?.isRegistered = true
+                    completion(true)
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
                     completion(false)
                 }
-                return
-            }
-            self.createUser(id: userID) {
-                completion(true)
             }
         }
     }
-    private func createUser(id: String, completion: @escaping () -> Void) {
-        let newUser = UserModel(id: id, name: name, email: email)
-        let db = Firestore.firestore()
-        
-        db.collection("users")
-            .document(id)
-            .setData(newUser.asDict()) { error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        self.errorMessage = error.localizedDescription
-                    }
-                    completion()
-                }
-            }
-    }
-    
-    // MARK: Input validation
-    private func validate() -> Bool {
-        guard !email.trimmingCharacters(in: .whitespaces).isEmpty,
-              !password.trimmingCharacters(in: .whitespaces).isEmpty,
-              !name.trimmingCharacters(in: .whitespaces).isEmpty
-        else {
-            errorMessage = "Enter a valid Email/Password. Fill in all the fields"
+
+
+    private func validateFields() -> Bool {
+        if email.isEmpty || password.isEmpty || confirmPassword.isEmpty || displayName.isEmpty {
+            errorMessage = "Please fill in all fields"
             return false
         }
-        
-        guard email.contains("@") && email.contains(".") else {
-            errorMessage = "Enter a valid Email"
+        if password != confirmPassword {
+            errorMessage = "The passwords do not match"
             return false
         }
-        
-        guard password.count > 5 else {
-            errorMessage = "Password should be at least 6 characters long"
-            return false
-        }
-        
-        guard password == confirmPassword else {
-            errorMessage = "Passwords do not match"
+        if !email.contains("@") {
+            errorMessage = "Invalid email"
             return false
         }
         return true
