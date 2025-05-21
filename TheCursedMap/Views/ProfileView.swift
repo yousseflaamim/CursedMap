@@ -14,6 +14,8 @@ struct ProfileView: View {
     @State private var deleteErrorMessage: String? = nil
     @StateObject var profileViewModel = ProfileViewModel()
     @StateObject var treasureViewModel = TreasureViewModel()
+    @StateObject private var soundManager = SoundManager.shared
+    
     
   
     var body: some View {
@@ -72,12 +74,22 @@ struct ProfileView: View {
                 .padding([.leading, .trailing, .bottom])
                 HStack{
                     Button(action: {
+                        soundManager.toggleSound()
+                    }) {
+                        Image(systemName: soundManager.isSoundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                            .resizable()
+                            .frame(width: 25, height: 25)
+                            .foregroundColor(.gray)
+                            .padding()
+                    }
+                    .padding(.horizontal,20)
+                    Button(action: {
                         showEditSheet = true
                     }) {
-                            Image(systemName: "square.and.pencil")
+                            Image(systemName: "pencil.circle")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 35, height: 35)
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(.gray)
                         
                     }
@@ -88,7 +100,7 @@ struct ProfileView: View {
                             Image(systemName: "trash")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 35, height: 35)
+                                .frame(width: 25, height: 25)
                                 .foregroundColor(.gray)
                                 .alert("Vill du radera ditt konto och allt innehåll?", isPresented: $showAlertDelete) {
                                     Button("Radera", role: .destructive) {
@@ -118,7 +130,7 @@ struct ProfileView: View {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 35, height: 35)
+                                .frame(width: 30, height: 30)
                                 .foregroundColor(.gray)
                         
                     }

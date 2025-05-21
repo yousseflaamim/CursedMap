@@ -50,6 +50,7 @@ struct LoginView: View {
                             .padding(.bottom)
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+                            SoundManager.shared.playSound(named: "click-click")
                             viewModel.login { success in
                                 if success {
                                     onLoginSuccess()
@@ -81,6 +82,7 @@ struct LoginView: View {
                     VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
+                            SoundManager.shared.playSound(named: "click-click")
                         }
                     }
                     .padding()
