@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ProgressHUD
 
 struct RegisterView: View {
     
@@ -71,12 +72,16 @@ struct RegisterView: View {
                 // Register Button
                 CustomButton(label: viewModel.isLoading ? "Registering..." : "Register") {
                     SoundManager.shared.playSound(named: "click-click")
+                    HUDManager.showLoading("Registering...")
                     viewModel.register { success in
-                        if success {
-                            onLoginSuccess()
+                    if success {
+                        HUDManager.showSuccess("Registration Successful!")
+                        onLoginSuccess()
+                        } else {
+                        HUDManager.showError("Registration Failed")
+                            }
                         }
                     }
-                }
                 .disabled(viewModel.isLoading)
                 .frame(width: 180)
                 .padding(.bottom, 10)
