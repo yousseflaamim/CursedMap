@@ -70,6 +70,7 @@ struct RegisterView: View {
                 
                 // Register Button
                 CustomButton(label: viewModel.isLoading ? "Registering..." : "Register") {
+                    SoundManager.shared.playSound(named: "click-click")
                     viewModel.register { success in
                         if success {
                             onLoginSuccess()
