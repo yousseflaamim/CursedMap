@@ -7,11 +7,18 @@
 
 import SwiftUI
 
+enum AppRoute: Hashable {
+    case profile
+    case treasure
+}
+
 struct StartView: View {
     @State var showInfo = false
+    @State var showProfile = false
+    @State private var path = NavigationPath()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ZStack {
                 // Bakground
                 LinearGradient(
@@ -30,28 +37,30 @@ struct StartView: View {
                         .padding(.bottom, -20)
 
                     Spacer()
-
-                    // Start Map-button
-                    Button("Start Map") {
-                        // Start Game logic här
-                    }
-                    .font(.system(size: 24, weight: .medium, design: .serif))
-                    .frame(width: 280, height: 60)
-                    .background(
-                        LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
-                                       startPoint: .top,
-                                       endPoint: .bottom)
-                    )
-                    .foregroundColor(.black)
-                    .cornerRadius(30)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.black, lineWidth: 1)
-                    )
-                    .padding(.bottom)
+                    
+                     NavigationLink(destination: GameView()) {
+                         Text("Start Map")
+                             .font(.system(size: 24, weight: .medium, design: .serif))
+                             .frame(width: 280, height: 60)
+                             .background(
+                                 LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                                startPoint: .top,
+                                                endPoint: .bottom)
+                             )
+                             .foregroundColor(.black)
+                             .cornerRadius(30)
+                             .overlay(
+                                 RoundedRectangle(cornerRadius: 30)
+                                     .stroke(Color.black, lineWidth: 1)
+                             )
+                     }
+                     .padding(.bottom)
 
                     // NavigationLink for TreasureView, comes whit a backbotton
-                    NavigationLink(destination: TreasureView()) {
+                    Button {
+                        SoundManager.shared.playSound(named: "click-click")
+                        path.append(AppRoute.treasure)
+                    } label: {
                         Text("Your Treasures")
                             .font(.system(size: 24, weight: .medium, design: .serif))
                             .frame(width: 280, height: 60)
@@ -67,6 +76,7 @@ struct StartView: View {
                                     .stroke(Color.black, lineWidth: 1)
                             )
                     }
+                    .padding(.bottom)
 
                     Spacer()
 
@@ -74,6 +84,7 @@ struct StartView: View {
                         // Info-button
                         Button(action: {
                             showInfo = true
+                            SoundManager.shared.playSound(named: "click-click")
                         }) {
                             ZStack {
                                 Circle()
@@ -98,7 +109,10 @@ struct StartView: View {
                         Spacer()
 
                         // profile button
-                        NavigationLink(destination: ProfileView()) {
+                        Button {
+                            SoundManager.shared.playSound(named: "click-click")
+                            path.append(AppRoute.profile)
+                        } label: {
                             ZStack {
                                 Circle()
                                     .fill(
@@ -111,7 +125,7 @@ struct StartView: View {
                                         Circle()
                                             .stroke(Color.black, lineWidth: 0.5)
                                     )
-                                Image(systemName: "gearshape")
+                                Image(systemName: "person")
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
@@ -141,6 +155,7 @@ struct StartView: View {
 
                         Button("OK") {
                             showInfo = false
+                            SoundManager.shared.playSound(named: "click-click")
                         }
                         .font(.system(size: 24, weight: .bold, design: .serif))
                         .padding()
@@ -155,7 +170,16 @@ struct StartView: View {
                     .shadow(radius: 10)
                 }
             }
-        }
+            .navigationDestination(for: AppRoute.self) { route in
+                   switch route {
+                   case .profile:
+                       ProfileView()
+                   case .treasure:
+                       TreasureView()
+                   }
+               }
+   
+        }.tint(.gray)
     }
 }
 

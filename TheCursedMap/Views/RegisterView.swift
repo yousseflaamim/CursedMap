@@ -28,13 +28,12 @@ struct RegisterView: View {
                 Image("CursedMapLogo")
                     .resizable()
                     .frame(width: 300, height: 300)
-                    .padding(.top, -100)
+                    .padding(.top, -50)
                     .padding(.bottom, -20)
                 
                 // Title
                 Text("Create Account")
                     .font(.largeTitle)
-                    .foregroundStyle(.white)
                     .padding(.bottom, 10)
                 
                 // Error Message
@@ -67,11 +66,11 @@ struct RegisterView: View {
                                     image: "lock",
                                     isSecure: true)
                 }
-                .padding(.horizontal, 30)
                 .padding(.bottom, 30)
                 
                 // Register Button
                 CustomButton(label: viewModel.isLoading ? "Registering..." : "Register") {
+                    SoundManager.shared.playSound(named: "click-click")
                     viewModel.register { success in
                         if success {
                             onLoginSuccess()
@@ -81,22 +80,11 @@ struct RegisterView: View {
                 .disabled(viewModel.isLoading)
                 .frame(width: 180)
                 .padding(.bottom, 10)
-                
-                // Go to Login Page
-                Button(action: {
-                    dismiss()
-                }) {
-                    Text("Already have an account? Log in")
-                        .font(.subheadline)
-                        .underline()
-                        .foregroundColor(.blue)
-                }
 
                 Spacer()
             }
-            .padding()
+            .padding(30)
         }
-        .navigationBarBackButtonHidden(true) 
     }
 }
 

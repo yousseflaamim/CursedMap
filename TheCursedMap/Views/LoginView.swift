@@ -16,25 +16,28 @@ struct LoginView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"),
-                                                           Color("Gray"),
-                                                           Color("GrayBlack")]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                .ignoresSafeArea()
+                // Background
+                LinearGradient(gradient: Gradient(colors: [
+                    Color("GrayBlack"),
+                    Color("Gray"),
+                    Color("GrayBlack")
+                ]), startPoint: .top, endPoint: .bottom)
+                    .ignoresSafeArea()
                 
                 VStack {
+                    // Logo
                     Image("CursedMapLogo")
                         .resizable()
                         .frame(width: 300, height: 300)
-                        .padding(.top, -100)
-                        .padding(.bottom, -20)
+                        .padding(.top, -55)
+                        .padding(.bottom, -25)
                     
-                    VStack(spacing: 16) {
+                    // Title
+                    VStack {
                         Text("Login")
                             .font(.largeTitle)
-                            .foregroundStyle(.white)
                         
+                        // Error message
                         if !viewModel.errorMessage.isEmpty {
                             Text(viewModel.errorMessage)
                                 .foregroundColor(.red)
@@ -44,8 +47,10 @@ struct LoginView: View {
                         CustomTextField(text: $viewModel.email, placeHolder: "Email", image: "envelope")
                         
                         CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
+                            .padding(.bottom)
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+                            SoundManager.shared.playSound(named: "click-click")
                             viewModel.login { success in
                                 if success {
                                     onLoginSuccess()
@@ -55,31 +60,32 @@ struct LoginView: View {
                         .disabled(viewModel.isLoading)
                         .frame(width: 180)
                     }
-                    .padding()
+                    .padding(20)
                     
                     HStack {
-                        Divider().frame(height: 1).background(Color.black)
-                        Text("Or").padding(.horizontal, 8).foregroundStyle(.white)
-                        Divider().frame(height: 1).background(Color.black)
+                        VStack {
+                            Divider()
+                                .frame(height: 1)
+                                .background(Color.black)
+                        }
+                                            
+                        Text("Or")
+                            .padding(.horizontal, 8)
+                                            
+                        VStack {
+                            Divider()
+                                .frame(height: 1)
+                                .background(Color.black)
+                        }
                     }
-                    .padding(.horizontal)
                     
-                    VStack(spacing: 12) {
+                    VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
-                        }
-                        
-                        Button(action: {
-                            path.append(AuthRoute.register)
-                        }) {
-                            Text("Don’t have an account? Sign up")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.white)
-                                
+                            SoundManager.shared.playSound(named: "click-click")
                         }
                     }
-                    .padding(.bottom)
+                    .padding()
                 }
                 .padding()
             }

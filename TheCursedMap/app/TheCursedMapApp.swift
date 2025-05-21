@@ -10,11 +10,12 @@ import FirebaseCore
 
 @main
 struct TheCursedMapApp: App {
+   
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
    // @State private var isLoggedIn = false
     @AppStorage("isLoggedIn") private var isLoggedIn = false
 
-    
+   
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
