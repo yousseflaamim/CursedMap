@@ -6,52 +6,43 @@
 //
 
 import Foundation
-import Combine
-import SwiftUI
+import FirebaseAuth
 
 class LoginViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
-    @Published var errorMessage = ""
-    @Published var isLoading: Bool = false
-    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
-    private let authService: AuthServiceProtocol
-    private var cancellables = Set<AnyCancellable>()
-
-    init(authService: AuthServiceProtocol = FirebaseAuthService()) {
-        self.authService = authService
-    }
-
+    @Published var errorMessage: String = ""
+    
+    init() {}
+    
     func login(completion: @escaping (Bool) -> Void) {
-        guard validateFields() else {
+        guard validate() else {
             completion(false)
             return
         }
-        isLoading = true
-        errorMessage = ""
-
-        authService.login(email: email, password: password) { [weak self] result in
+        
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
             DispatchQueue.main.async {
-                self?.isLoading = false
-                switch result {
-                case .success:
-                    self?.isLoggedIn = true  
-                    completion(true)
-                case .failure(let error):
-                    self?.errorMessage = error.localizedDescription
+                if let error = error {
+                    self.errorMessage = error.localizedDescription
                     completion(false)
+                } else {
+                    self.errorMessage = ""
+                    completion(true)
                 }
             }
         }
     }
-
-    private func validateFields() -> Bool {
-        if email.trimmingCharacters(in: .whitespaces).isEmpty || password.isEmpty {
-            errorMessage = "Please enter your email and password"
+    
+    private func validate() -> Bool {
+        guard !email.trimmingCharacters(in: .whitespaces).isEmpty,
+              !password.trimmingCharacters(in: .whitespaces).isEmpty else {
+            errorMessage = "Enter a valid Email/Password. Fill in all the fields"
             return false
         }
-        if !email.contains("@") {
-            errorMessage = "Invalid email"
+        
+        guard email.contains("@") && email.contains(".") else {
+            errorMessage = "Enter a valid Email"
             return false
         }
         return true

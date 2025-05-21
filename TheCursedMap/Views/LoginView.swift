@@ -12,7 +12,6 @@ struct LoginView: View {
     @State private var path = NavigationPath()
     
     var onLoginSuccess: () -> Void
-    
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
@@ -22,7 +21,6 @@ struct LoginView: View {
                                startPoint: .top,
                                endPoint: .bottom)
                 .ignoresSafeArea()
-                
                 VStack {
                     Image("CursedMapLogo")
                         .resizable()
@@ -30,56 +28,57 @@ struct LoginView: View {
                         .padding(.top, -100)
                         .padding(.bottom, -20)
                     
-                    VStack(spacing: 16) {
+                    VStack {
+                        
                         Text("Login")
                             .font(.largeTitle)
-                            .foregroundStyle(.white)
                         
                         if !viewModel.errorMessage.isEmpty {
                             Text(viewModel.errorMessage)
-                                .foregroundColor(.red)
-                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.red)
                         }
                         
                         CustomTextField(text: $viewModel.email, placeHolder: "Email", image: "envelope")
                         
                         CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
+                            .padding(.bottom)
                         
-                        CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+                        CustomButton(label: "Login") {
+//                            onLoginSuccess()
                             viewModel.login { success in
                                 if success {
                                     onLoginSuccess()
                                 }
                             }
                         }
-                        .disabled(viewModel.isLoading)
                         .frame(width: 180)
                     }
-                    .padding()
+                    .padding(20)
                     
                     HStack {
-                        Divider().frame(height: 1).background(Color.black)
-                        Text("Or").padding(.horizontal, 8).foregroundStyle(.white)
-                        Divider().frame(height: 1).background(Color.black)
+                        VStack {
+                            Divider()
+                                .frame(height: 1)
+                                .background(Color.black)
+                        }
+                        
+                        Text("Or")
+                            .padding(.horizontal, 8)
+                        
+                        VStack {
+                            Divider()
+                                .frame(height: 1)
+                                .background(Color.black)
+                        }
                     }
-                    .padding(.horizontal)
                     
-                    VStack(spacing: 12) {
+                    VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
                         }
-                        
-                        Button(action: {
-                            path.append(AuthRoute.register)
-                        }) {
-                            Text("Don’t have an account? Sign up")
-                                .font(.subheadline)
-                                .underline()
-                                .foregroundColor(.white)
-                                
-                        }
                     }
-                    .padding(.bottom)
+                    .padding()
+                    .tint(.black)
                 }
                 .padding()
             }
