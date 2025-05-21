@@ -37,25 +37,24 @@ struct StartView: View {
                         .padding(.bottom, -20)
 
                     Spacer()
-
-                    // Start Map-button
-                    Button("Start Map") {
-                        // Start Game logic här
-                    }
-                    .font(.system(size: 24, weight: .medium, design: .serif))
-                    .frame(width: 280, height: 60)
-                    .background(
-                        LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
-                                       startPoint: .top,
-                                       endPoint: .bottom)
-                    )
-                    .foregroundColor(.black)
-                    .cornerRadius(30)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 30)
-                            .stroke(Color.black, lineWidth: 1)
-                    )
-                    .padding(.bottom)
+                    
+                     NavigationLink(destination: GameView()) {
+                         Text("Start Map")
+                             .font(.system(size: 24, weight: .medium, design: .serif))
+                             .frame(width: 280, height: 60)
+                             .background(
+                                 LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                                startPoint: .top,
+                                                endPoint: .bottom)
+                             )
+                             .foregroundColor(.black)
+                             .cornerRadius(30)
+                             .overlay(
+                                 RoundedRectangle(cornerRadius: 30)
+                                     .stroke(Color.black, lineWidth: 1)
+                             )
+                     }
+                     .padding(.bottom)
 
                     // NavigationLink for TreasureView, comes whit a backbotton
                     Button {
