@@ -12,7 +12,7 @@ import SwiftData
 @main
 struct TheCursedMapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var isLoggedIn = false
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
 
     // MARK: - SwiftData ModelContainer Setup
     var sharedModelContainer: ModelContainer = {
