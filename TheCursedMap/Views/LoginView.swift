@@ -6,6 +6,7 @@
 // hej
 
 import SwiftUI
+import ProgressHUD
 
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
@@ -51,9 +52,14 @@ struct LoginView: View {
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
                             SoundManager.shared.playSound(named: "click-click")
+                            HUDManager.showLoading("Is logging in...")
+
                             viewModel.login { success in
                                 if success {
-                                    onLoginSuccess()
+                                    HUDManager.showSuccess("Welcome!")
+                                        onLoginSuccess()
+                                } else {
+                                    HUDManager.showError("Login failed")
                                 }
                             }
                         }
