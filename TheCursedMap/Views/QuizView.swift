@@ -15,14 +15,11 @@ struct QuizView: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.8) // Mörk bakgrund för quizzen
+            Color("GrayBlack")
                 .ignoresSafeArea()
 
             VStack {
-                if viewModel.isLoading { // Om du har en laddningsstatus i ViewModel
-                    ProgressView("Laddar frågor...")
-                        .foregroundColor(.white)
-                } else if viewModel.quizFinished {
+                    if viewModel.quizFinished {
                     QuizResultView(score: viewModel.score, totalQuestions: viewModel.allQuizQuestions.count)
                         .padding()
                     Button("Spela igen?") {
@@ -113,17 +110,4 @@ struct QuizResultView: View {
         .background(Color.purple.opacity(0.8))
         .cornerRadius(15)
     }
-}
-
-// MARK: - Preview för QuizView
-#Preview {
-    QuizView()
-        // Konfigurera SwiftData för förhandsvisningen
-        .modelContainer(for: QuizQuestion.self, inMemory: true) { container in
-            // Seeda quizfrågor för förhandsvisningen
-            container.mainContext.insert(QuizQuestion(questionText: "Vad är ett spöke?", options: ["En levande varelse", "En död persons ande", "En sten", "En fågel"], correctAnswerIndex: 1, explanation: "Ett spöke är enligt folktro anden av en avliden person."))
-            container.mainContext.insert(QuizQuestion(questionText: "Vilken färg har blodet?", options: ["Grön", "Gul", "Röd", "Blå"], correctAnswerIndex: 2, explanation: "Blod är rött på grund av hemoglobin."))
-            container.mainContext.insert(QuizQuestion(questionText: "Vad kallas en grupp fladdermöss?", options: ["Flock", "Svärm", "Koloni", "Hjord"], correctAnswerIndex: 2, explanation: "En grupp fladdermöss kallas en koloni."))
-            // Fler frågor för förhandsvisning
-        }
 }

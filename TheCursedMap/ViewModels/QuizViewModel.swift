@@ -35,8 +35,6 @@ final class QuizViewModel: ObservableObject {
             allQuizQuestions = try context.fetch(descriptor)
             print("Loaded \(allQuizQuestions.count) quiz questions.")
             if allQuizQuestions.isEmpty {
-                // Detta bör inte hända om du seedar i TheCursedMapApp,
-                // men en fallback kan vara att lägga till några här.
                 print("No quiz questions found in database. Please ensure seeding is working.")
             } else {
                 startNewQuiz()
@@ -52,7 +50,7 @@ final class QuizViewModel: ObservableObject {
         quizFinished = false
         showExplanation = false
         lastAnswerWasCorrect = nil
-        // Blanda frågorna för varje nytt quiz (valfritt)
+        // Blanda frågorna för varje nytt quiz 
         allQuizQuestions.shuffle()
         presentNextQuestion()
     }
@@ -86,7 +84,6 @@ final class QuizViewModel: ObservableObject {
     }
 
     func resetQuiz() {
-        // Återställer quizzen helt
         startNewQuiz()
     }
 }
