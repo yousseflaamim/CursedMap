@@ -10,6 +10,7 @@ import SwiftUI
 enum AppRoute: Hashable {
     case profile
     case treasure
+    case map
 }
 
 struct StartView: View {
@@ -38,24 +39,27 @@ struct StartView: View {
 
                     Spacer()
                     
-                     NavigationLink(destination: GameView()) {
-                         Text("Start Map")
-                             .font(.system(size: 24, weight: .medium, design: .serif))
-                             .frame(width: 280, height: 60)
-                             .background(
-                                 LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
-                                                startPoint: .top,
-                                                endPoint: .bottom)
-                             )
-                             .foregroundColor(.black)
-                             .cornerRadius(30)
-                             .overlay(
-                                 RoundedRectangle(cornerRadius: 30)
-                                     .stroke(Color.black, lineWidth: 1)
-                             )
-                     }
-                     .padding(.bottom)
-
+                    Button {
+                        SoundManager.shared.playSound(named: "click-click")
+                        path.append(AppRoute.map)
+                    } label: {
+                        Text("Start Map")
+                            .font(.system(size: 24, weight: .medium, design: .serif))
+                            .frame(width: 280, height: 60)
+                            .background(
+                                LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                               startPoint: .top,
+                                               endPoint: .bottom)
+                            )
+                            .foregroundColor(.black)
+                            .cornerRadius(30)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 30)
+                                    .stroke(Color.black, lineWidth: 1)
+                            )
+                    }
+                    .padding(.bottom)
+                    
                     // NavigationLink for TreasureView, comes whit a backbotton
                     Button {
                         SoundManager.shared.playSound(named: "click-click")
@@ -176,6 +180,8 @@ struct StartView: View {
                        ProfileView()
                    case .treasure:
                        TreasureView()
+                   case.map:
+                       GameView()
                    }
                }
    

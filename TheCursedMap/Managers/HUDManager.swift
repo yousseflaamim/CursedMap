@@ -20,12 +20,12 @@ struct HUDManager {
     }
     
     static func showLoading(_ message: String = "Loading...") {
-        baseConfiguration(statusColor: .blue)
+        baseConfiguration(statusColor: .darkGray)
         ProgressHUD.animate(message)
     }
     
     static func showSuccess(_ message: String = "Success") {
-        baseConfiguration(statusColor: .green)
+        baseConfiguration(statusColor: .darkGray)
         ProgressHUD.succeed(message)
     }
     
