@@ -5,10 +5,9 @@
 //  Created by Saeid Ahmadi on 2025-05-20.
 //
 import Foundation
-import SwiftData
 
-@Model
-final class QuizQuestion {
+struct QuizQuestion: Identifiable {
+    let id = UUID()
     var questionText: String
     var options: [String]
     var correctAnswerIndex: Int

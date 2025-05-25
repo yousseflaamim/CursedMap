@@ -84,19 +84,11 @@ struct GameView: View {
     }
 
     private func generateChests(around location: CLLocationCoordinate2D) {
-        chests = (0..<5).map { i in // Generera t.ex. 5 kistor
-            let randomLat = location.latitude  + Double.random(in: -0.005...0.005) // Mindre område
-            let randomLon = location.longitude + Double.random(in: -0.005...0.005) // Mindre område
-            // Skapa nya Chest-objekt och lägg till dem i din array
+        chests = (0..<5).map { i in
+            let randomLat = location.latitude  + Double.random(in: -0.005...0.005)
+            let randomLon = location.longitude + Double.random(in: -0.005...0.005)
             return Chest(coordinate: CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon), name: "Mystisk Kista \(i+1)")
         }
         print("GameView genererade \(chests.count) slumpade kistor.")
     }
-}
-
-#Preview {
-    GameView()
-        .modelContainer(
-            try! ModelContainer(for: QuizQuestion.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        )
 }
