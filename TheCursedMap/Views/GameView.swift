@@ -12,28 +12,25 @@ import SwiftData
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
     
-    // Kartans region kommer att uppdateras när userLocation uppdateras
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
         span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
     )
     
-    @State private var chests: [Chest] = [] // Array med de slumpade kistorna 
-    @State private var chestsGenerated = false // För att bara generera kistor en gång
+    @State private var chests: [Chest] = []
+    @State private var chestsGenerated = false
     
-    @State private var showingQuiz: Bool = false // Kontrollerar visning av quiz
-    @State private var currentFoundChestId: UUID? // ID för den kista som triggade quizzen
+    @State private var showingQuiz: Bool = false
+    @State private var quizQuestionForCurrentChest: QuizQuestion?
 
     var body: some View {
         ZStack {
             Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: chests) { chest in
-                // Visar olika ikon beroende på om kistan är hittad
                 MapAnnotation(coordinate: chest.coordinate) {
-                    
                     Image(chest.isFound ? "open-chest1" : "closed-chest")
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(chest.isFound ? .green : .brown) // Färg för debugging
+                        .foregroundColor(chest.isFound ? .green : .brown)
                         .scaleEffect(chest.isFound ? 1.2 : 1.0)
                         .animation(.spring(), value: chest.isFound)
                 }
@@ -48,55 +45,61 @@ struct GameView: View {
         .onAppear {
             locationManager.startLocationUpdates()
         }
-        // Lyssnar på användarens platsuppdateringar från LocationManager
         .onReceive(locationManager.$userLocation) { location in
             guard let location = location else { return }
 
-            // Uppdaterar kartans region till användarens position
             region = MKCoordinateRegion(
-                center: location, // Använd CLLocationCoordinate2D direkt här
+                center: location,
                 span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
             )
 
-            // Generera kistor bara en gång när första platsen är känd
             if !chestsGenerated {
-                generateChests(around: location) // Skicka CLLocationCoordinate2D
+                generateChests(around: location)
                 chestsGenerated = true
-                // Ge LocationManager listan med de genererade kistorna
                 locationManager.setChests(chests)
             }
         }
         // Lyssnar efter notiser om hittade kistor från LocationManager
         .onReceive(NotificationCenter.default.publisher(for: .chestFound)) { notification in
             if let chestId = notification.userInfo?["chestId"] as? UUID {
-                // Denna del är främst för att GameView ska reagera på att quiz ska visas.
+                // Hitta den hittade kistan i vår lista
                 if let foundChest = chests.first(where: { $0.id == chestId }) {
                     print("GameView mottog notis om hittad kista: \(foundChest.name)")
-                    currentFoundChestId = chestId // Spara ID om du vill skicka det till quizzen
-                    showingQuiz = true // Visa quizzen!
+                    
+                    if let question = foundChest.associatedQuizQuestion {
+                        quizQuestionForCurrentChest = question
+                        showingQuiz = true // Visa quizzen!
+                    } else {
+                        print("Fel: Hittad kista (\(foundChest.name)) saknar tilldelad quizfråga.")
+                    }
                 }
             }
         }
+        
         // Presentera QuizView modalt när en kista hittas
         .sheet(isPresented: $showingQuiz) {
-            QuizView()
+            if let question = quizQuestionForCurrentChest {
+                QuizView(quizQuestion: question)
+            } else {
+                Text("Kunde inte ladda quizfråga.")
+            }
         }
     }
 
     private func generateChests(around location: CLLocationCoordinate2D) {
-        chests = (0..<5).map { i in // Generera t.ex. 5 kistor
-            let randomLat = location.latitude  + Double.random(in: -0.005...0.005) // Mindre område
-            let randomLon = location.longitude + Double.random(in: -0.005...0.005) // Mindre område
-            // Skapa nya Chest-objekt och lägg till dem i din array
-            return Chest(coordinate: CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon), name: "Mystisk Kista \(i+1)")
-        }
-        print("GameView genererade \(chests.count) slumpade kistor.")
-    }
-}
+        // Hämta en kopia av de fördefinierade frågorna och blanda dem
+        var availableQuestions = QuizViewModel.predefinedQuestions.shuffled()
 
-#Preview {
-    GameView()
-        .modelContainer(
-            try! ModelContainer(for: QuizQuestion.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
-        )
+        chests = (0..<5).map { i in
+            let randomLat = location.latitude  + Double.random(in: -0.005...0.005)
+            let randomLon = location.longitude + Double.random(in: -0.005...0.005)
+            
+            let questionToAssign = availableQuestions.popLast() // Ta bort sista frågan från listan
+
+            return Chest(coordinate: CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon),
+                         name: "Mystisk Kista \(i+1)",
+                         associatedQuizQuestion: questionToAssign)
+        }
+        print("GameView genererade \(chests.count) slumpade kistor med tilldelade frågor.")
+    }
 }
