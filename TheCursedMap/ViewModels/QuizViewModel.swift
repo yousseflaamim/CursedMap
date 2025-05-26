@@ -8,12 +8,20 @@ import Foundation
 import SwiftUI
 
 final class QuizViewModel: ObservableObject {
+    
+    @Published var treasureVM: TreasureViewModel? = nil // to update levelprogress in firestore
+    
     @Published var currentQuestion: QuizQuestion?
     @Published var currentQuestionIndex: Int = 0
     @Published var score: Int = 0
     @Published var quizFinished: Bool = false
     @Published var showExplanation: Bool = false
     @Published var lastAnswerWasCorrect: Bool?
+    
+    init(treasureVM: TreasureViewModel? = nil) { // also to update levelprogress in firestore
+           self.treasureVM = treasureVM
+           loadQuestions()
+       }
     
     private static let predefinedQuestions: [QuizQuestion] = [
         QuizQuestion(questionText: "Vilken färg har blodet?", options: ["Grön", "Gul", "Röd", "Blå"], correctAnswerIndex: 2, explanation: "Blod är rött på grund av hemoglobin och järn."),
@@ -68,6 +76,7 @@ final class QuizViewModel: ObservableObject {
         lastAnswerWasCorrect = isCorrect
         if isCorrect {
             score += 1
+            treasureVM?.openChest() // opens chest in treasureViewModel to save to firestore
         }
         showExplanation = true
 

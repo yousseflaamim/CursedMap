@@ -11,6 +11,7 @@ import SwiftData
 
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
+    @StateObject private var treasureVM = TreasureViewModel()
     
     // Kartans region kommer att uppdateras när userLocation uppdateras
     @State private var region = MKCoordinateRegion(
@@ -30,7 +31,7 @@ struct GameView: View {
                 // Visar olika ikon beroende på om kistan är hittad
                 MapAnnotation(coordinate: chest.coordinate) {
                     
-                    Image(chest.isFound ? "open-chest1" : "closed-chest")
+                    Image(chest.isFound ? "openChest1" : "closedChest")
                         .resizable()
                         .frame(width: 30, height: 30)
                         .foregroundColor(chest.isFound ? .green : .brown) // Färg för debugging
@@ -79,7 +80,7 @@ struct GameView: View {
         }
         // Presentera QuizView modalt när en kista hittas
         .sheet(isPresented: $showingQuiz) {
-            QuizView()
+            QuizView(treasureVM: treasureVM) // and opens and saves it to firestore
         }
     }
 

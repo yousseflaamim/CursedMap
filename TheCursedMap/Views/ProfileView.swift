@@ -34,14 +34,14 @@ struct ProfileView: View {
             
             VStack {
                 HStack{
-                    Image("open-chest2") // en mindre öppnad kista
+                    Image("openChest1") // en mindre öppnad kista
                         .padding()
-                    Text("10") // få in antal öppnade kistor här senare från treasureViewModel
+                    Text("\(treasureViewModel.openedTreasure)")
                         .foregroundColor(.gray)
                         .padding()
                     Spacer()
-                        Image("coin1")
-                    Text("100")  // få in antal coins användaren har här senare från treasureViewModel
+                        Image("coinpile1")
+                    Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
                         .padding(20)
                 }

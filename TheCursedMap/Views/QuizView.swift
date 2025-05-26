@@ -7,9 +7,16 @@
 import SwiftUI
 
 struct QuizView: View {
+    
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
 
     @StateObject private var viewModel = QuizViewModel()
+    @ObservedObject var treasureVM: TreasureViewModel
+    
+    init(treasureVM: TreasureViewModel) {
+           self.treasureVM = treasureVM
+           _viewModel = StateObject(wrappedValue: QuizViewModel(treasureVM: treasureVM))
+       }
 
     var body: some View {
         ZStack {
@@ -86,6 +93,7 @@ struct QuizView: View {
             }
         }
     }
+    
 }
 
 // Liten hjälpvy för att visa quizresultatet
