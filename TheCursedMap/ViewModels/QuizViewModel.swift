@@ -8,6 +8,7 @@ import Foundation
 import SwiftUI
 
 final class QuizViewModel: ObservableObject {
+    @Published var showWrongAnswerView: Bool = false
     @Published var currentQuestion: QuizQuestion?
     @Published var currentQuestionIndex: Int = 0
     @Published var score: Int = 0
@@ -68,6 +69,8 @@ final class QuizViewModel: ObservableObject {
         lastAnswerWasCorrect = isCorrect
         if isCorrect {
             score += 1
+        } else {
+            showWrongAnswerView = true
         }
         showExplanation = true
 
