@@ -11,12 +11,12 @@ import FirebaseCore
 @main
 struct TheCursedMapApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var isLoggedIn = false
-    
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
+
     var body: some Scene {
         WindowGroup {
             if isLoggedIn {
-                //StartView()
+                StartView()
             } else {
                 LoginView {
                     isLoggedIn = true
@@ -25,10 +25,12 @@ struct TheCursedMapApp: App {
         }
     }
 }
+
+// Firebase App Delegate
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
 }

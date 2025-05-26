@@ -10,6 +10,7 @@ import SwiftUI
 struct EditProfileView: View {
     
     @Environment(\.dismiss) var dismiss
+    @StateObject var profileViewModel = ProfileViewModel()
     @State private var newUsername: String = ""
     
     var body: some View {
@@ -25,7 +26,7 @@ struct EditProfileView: View {
                 // logik för att eventuellt ändra profilbild.
                 Image("profile-image")
                     .padding(.bottom, 20)
-                Text("Name")
+                Text(profileViewModel.name)
                     .font(.system(size: 24, weight: .medium, design: .serif))
                     .foregroundColor(.black)
                     .padding(.bottom, 50)
@@ -38,7 +39,9 @@ struct EditProfileView: View {
                 
                 Button("Spara") {
                                 // logik att spara till Firebase här
+                                SoundManager.shared.playSound(named: "click-click")
                                 dismiss()
+                    
                             }
                 .font(.system(size: 24, weight: .medium, design: .serif))
                 .frame(width: 280, height: 60)
@@ -56,6 +59,7 @@ struct EditProfileView: View {
                 .padding(.bottom)
                 
                             Button("Avbryt") {
+                                SoundManager.shared.playSound(named: "click-click")
                                 dismiss()
                             }
                             .font(.system(size: 24, weight: .medium, design: .serif))

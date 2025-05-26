@@ -8,18 +8,55 @@
 import SwiftUI
 
 struct TreasureView: View {
+    
+    @StateObject var treasureViewModel = TreasureViewModel()
+    
     var body: some View {
+        
+        // in use of progressView
+        let maxCoinsPerLevel = 100
+        let progress = min(Double(treasureViewModel.coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel), 1.0)
+        
         ZStack{
          Color("GrayBlack")
                 .ignoresSafeArea()
+            
             VStack{
                 HStack{
+                    Image("open-chest2") // en mindre öppnad kista än den andra som blev förstor
+                        .padding()
+                    Text("10") // få in antal öppnade kistor här senare
+                        .foregroundColor(.gray)
+                        .padding()
+                    Spacer()
+                        Image("coin1")
+                    Text("100")  // få in antal coins användaren har här senare
+                        .foregroundColor(.gray)
+                        .padding(20)
+                }
+                HStack{
                     Image("open-chest1")
+                        .padding(.bottom)
                     Text("Your Treasures!")
                         .font(.system(size: 24, weight: .medium, design: .serif))
                         .foregroundColor(Color.white)
-                        .padding()
+                        .padding(.bottom)
                 }
+                
+                Spacer()
+                // ProgressView for Level up
+                VStack(alignment: .leading) {
+                    Text("Level \(treasureViewModel.level)")
+                        .foregroundColor(.yellow)
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+
+                    ProgressView(value: progress)
+                        .progressViewStyle(LinearProgressViewStyle())
+                        .frame(height: 10)
+                        .tint(.yellow)
+                }
+                .padding([.leading, .trailing, .bottom])
+                
                 Spacer()
                 
                 List{

@@ -1,28 +1,29 @@
 //
-//  LoginViewModel.swift
+//  RegisterViewModel.swift
 //  TheCursedMap
 //
-//  Created by Emilia Forsheim on 2025-05-19.
+//  Created by Emilia Forsheim on 2025-05-20.
 //
 
 import Foundation
 import Combine
-import SwiftUI
 
-class LoginViewModel: ObservableObject {
+class RegisterViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var password: String = ""
-    @Published var errorMessage = ""
+    @Published var confirmPassword: String = ""
+    @Published var displayName: String = ""
+    @Published var errorMessage: String = ""
     @Published var isLoading: Bool = false
-    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
+    @Published var isRegistered: Bool = false
+
     private let authService: AuthServiceProtocol
-    private var cancellables = Set<AnyCancellable>()
 
     init(authService: AuthServiceProtocol = FirebaseAuthService()) {
         self.authService = authService
     }
 
-    func login(completion: @escaping (Bool) -> Void) {
+    func register(completion: @escaping (Bool) -> Void) {
         guard validateFields() else {
             completion(false)
             return
@@ -30,12 +31,12 @@ class LoginViewModel: ObservableObject {
         isLoading = true
         errorMessage = ""
 
-        authService.login(email: email, password: password) { [weak self] result in
+        authService.register(email: email, password: password, displayName: displayName) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
                 switch result {
                 case .success:
-                    self?.isLoggedIn = true
+                    self?.isRegistered = true
                     completion(true)
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
@@ -45,9 +46,14 @@ class LoginViewModel: ObservableObject {
         }
     }
 
+
     private func validateFields() -> Bool {
-        if email.trimmingCharacters(in: .whitespaces).isEmpty || password.isEmpty {
-            errorMessage = "Please enter your email and password"
+        if email.isEmpty || password.isEmpty || confirmPassword.isEmpty || displayName.isEmpty {
+            errorMessage = "Please fill in all fields"
+            return false
+        }
+        if password != confirmPassword {
+            errorMessage = "The passwords do not match"
             return false
         }
         if !email.contains("@") {
