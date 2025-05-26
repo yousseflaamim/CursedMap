@@ -5,10 +5,8 @@
 //  Created by Saeid Ahmadi on 2025-05-20.
 //
 import SwiftUI
-import SwiftData
 
 struct QuizView: View {
-    @Environment(\.modelContext) var modelContext // För att skicka till ViewModel
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
 
     @StateObject private var viewModel = QuizViewModel()
@@ -85,7 +83,6 @@ struct QuizView: View {
             }
             .padding()
             .onAppear {
-                viewModel.configure(with: modelContext) // Konfigurera ViewModel med ModelContext
             }
         }
     }

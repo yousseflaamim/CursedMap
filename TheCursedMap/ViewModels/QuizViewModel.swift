@@ -5,7 +5,6 @@
 //  Created by Saeid Ahmadi on 2025-05-20.
 //
 import Foundation
-import SwiftData
 import SwiftUI
 
 final class QuizViewModel: ObservableObject {
@@ -15,32 +14,29 @@ final class QuizViewModel: ObservableObject {
     @Published var quizFinished: Bool = false
     @Published var showExplanation: Bool = false
     @Published var lastAnswerWasCorrect: Bool?
+    
+    private static let predefinedQuestions: [QuizQuestion] = [
+        QuizQuestion(questionText: "Vilken färg har blodet?", options: ["Grön", "Gul", "Röd", "Blå"], correctAnswerIndex: 2, explanation: "Blod är rött på grund av hemoglobin och järn."),
+        QuizQuestion(questionText: "Vilket organ pumpar blod?", options: ["Levern", "Lungorna", "Hjärtat", "Njuren"], correctAnswerIndex: 2, explanation: "Hjärtat är en muskel som pumpar blod genom kroppen."),
+        QuizQuestion(questionText: "Vad heter den fiktiva karaktären som bor i en kista?", options: ["Drakula", "Frankenstein", "Jack Sparrow", "Spöket Laban"], correctAnswerIndex: 3, explanation: "Spöket Laban är en vänlig karaktär som bor i ett linneskåp i ett slott."),
+        QuizQuestion(questionText: "Vad kallas en grupp fladdermöss?", options: ["Flock", "Svärm", "Koloni", "Hjord"], correctAnswerIndex: 2, explanation: "En grupp fladdermöss kallas en koloni."),
+        QuizQuestion(questionText: "Vem skrev Frankenstein?", options: ["Mary Shelley", "Bram Stoker", "Edgar Allan Poe", "H.P. Lovecraft"], correctAnswerIndex: 0, explanation: "Mary Shelley publicerade Frankenstein 1818."),
+        QuizQuestion(questionText: "Vad är en 'banshee' enligt irländsk folktro?", options: ["En god fe", "Ett kvinnligt spöke som varslar döden", "En typ av älva", "En skogsvarelse"], correctAnswerIndex: 1, explanation: "En banshee är ett kvinnligt andeväsen som varslar döden genom att skrika eller jämra sig.")
+    ]
 
     var allQuizQuestions: [QuizQuestion] = []
-    private var modelContext: ModelContext?
-
-    // Konfigurera ViewModel med ModelContext
-    func configure(with context: ModelContext) {
-        self.modelContext = context
+    
+    init() {
         loadQuestions()
     }
 
     private func loadQuestions() {
-        guard let context = modelContext else {
-            print("Error: ModelContext is not set.")
-            return
-        }
-        do {
-            let descriptor = FetchDescriptor<QuizQuestion>(sortBy: [SortDescriptor(\.questionText)])
-            allQuizQuestions = try context.fetch(descriptor)
-            print("Loaded \(allQuizQuestions.count) quiz questions.")
-            if allQuizQuestions.isEmpty {
-                print("No quiz questions found in database. Please ensure seeding is working.")
-            } else {
-                startNewQuiz()
-            }
-        } catch {
-            print("Failed to fetch quiz questions: \(error)")
+        allQuizQuestions = Self.predefinedQuestions
+        print("Loaded \(allQuizQuestions.count) quiz questions from hardcoded list.")
+        if allQuizQuestions.isEmpty {
+            print("No quiz questions found in hardcoded list.")
+        } else {
+            startNewQuiz()
         }
     }
 
@@ -50,8 +46,7 @@ final class QuizViewModel: ObservableObject {
         quizFinished = false
         showExplanation = false
         lastAnswerWasCorrect = nil
-        // Blanda frågorna för varje nytt quiz 
-        allQuizQuestions.shuffle()
+        allQuizQuestions.shuffle() // Blanda frågorna för varje nytt quiz
         presentNextQuestion()
     }
 
