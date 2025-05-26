@@ -85,7 +85,11 @@ struct QuizView: View {
             .onAppear {
             }
         }
+        .fullScreenCover(isPresented: $viewModel.showWrongAnswerView) {
+            WrongAnswerView()
+        }
     }
+    
 }
 
 // Liten hjälpvy för att visa quizresultatet
