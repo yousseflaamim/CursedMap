@@ -8,8 +8,15 @@ import SwiftUI
 
 struct QuizView: View {
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
+    
+    let quizQuestion: QuizQuestion
+    
+    @StateObject private var viewModel: QuizViewModel
 
-    @StateObject private var viewModel = QuizViewModel()
+    init(quizQuestion: QuizQuestion) {
+        self.quizQuestion = quizQuestion
+        _viewModel = StateObject(wrappedValue: QuizViewModel(question: quizQuestion))
+    }
 
     var body: some View {
         ZStack {
@@ -17,27 +24,14 @@ struct QuizView: View {
                 .ignoresSafeArea()
 
             VStack {
-                    if viewModel.quizFinished {
-                    QuizResultView(score: viewModel.score, totalQuestions: viewModel.allQuizQuestions.count)
-                        .padding()
-                    Button("Spela igen?") {
-                        viewModel.resetQuiz()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.green)
-                    .padding()
-                    Button("Stäng") {
-                        dismiss() // Stänger den modala vyn
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-                } else if let question = viewModel.currentQuestion {
+                if let question = viewModel.currentQuestion {
                     Text(question.questionText)
                         .font(.title2)
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.bottom, 20)
 
+                    // Svarsalternativ
                     ForEach(question.options.indices, id: \.self) { index in
                         Button {
                             viewModel.submitAnswer(optionIndex: index)
@@ -54,6 +48,7 @@ struct QuizView: View {
                         .disabled(viewModel.showExplanation) // Inaktivera knappar under förklaring
                     }
 
+                    // Förklaring och "Stäng"-knapp
                     if viewModel.showExplanation {
                         if let wasCorrect = viewModel.lastAnswerWasCorrect {
                             Text(wasCorrect ? "Rätt svar!" : "Fel svar!")
@@ -69,15 +64,16 @@ struct QuizView: View {
                                 .padding(.horizontal)
                                 .padding(.top, 5)
                         }
-                    }
-
-                    Spacer()
-
-                    Text("Poäng: \(viewModel.score) / \(viewModel.currentQuestionIndex)")
-                        .foregroundColor(.white)
+                        
+                        Button("Stäng") {
+                            dismiss()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.red)
                         .padding(.top, 20)
+                    }
                 } else {
-                    Text("Inga frågor hittades eller laddades.")
+                    Text("Ingen fråga hittades för denna kista.")
                         .foregroundColor(.white)
                 }
             }
