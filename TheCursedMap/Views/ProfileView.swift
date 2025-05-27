@@ -40,7 +40,7 @@ struct ProfileView: View {
                         .foregroundColor(.gray)
                         .padding()
                     Spacer()
-                        Image("coinpile1")
+                        Image("coinpile")
                     Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
                         .padding(20)
