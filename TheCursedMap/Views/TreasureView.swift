@@ -33,13 +33,13 @@ struct TreasureView: View {
                         .foregroundColor(.gray)
                         .padding(20)
                 }
-                HStack{
+                VStack{
+                    Image("yourTreasures")
+                        .resizable()
+                        .frame(width: 300, height: 100)
+                        .padding(.top)
+                        .padding(.bottom, -20)
                     Image("openChest")
-                        .padding(.bottom)
-                    Text("Your Treasures!")
-                        .font(.system(size: 24, weight: .medium, design: .serif))
-                        .foregroundColor(Color.red)
-                        .padding(.bottom)
                 }
                 
                 Spacer()

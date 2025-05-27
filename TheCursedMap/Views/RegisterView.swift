@@ -71,7 +71,7 @@ struct RegisterView: View {
                 
                 // Register Button
                 CustomButton(label: viewModel.isLoading ? "Registering..." : "Register") {
-                    SoundManager.shared.playSound(named: "click-click")
+                    SoundManager.shared.playButtonSound(named: "click-click")
                     HUDManager.showLoading("Registering...")
                     viewModel.register { success in
                     if success {

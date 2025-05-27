@@ -40,7 +40,7 @@ struct StartView: View {
                     Spacer()
                     
                     Button {
-                        SoundManager.shared.playSound(named: "click-click")
+                        SoundManager.shared.playButtonSound(named: "click-click")
                         path.append(AppRoute.map)
                     } label: {
                         Text("Start Map")
@@ -51,7 +51,7 @@ struct StartView: View {
                                                startPoint: .top,
                                                endPoint: .bottom)
                             )
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
                             .cornerRadius(30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 30)
@@ -62,7 +62,7 @@ struct StartView: View {
                     
                     // NavigationLink for TreasureView, comes whit a backbotton
                     Button {
-                        SoundManager.shared.playSound(named: "click-click")
+                        SoundManager.shared.playButtonSound(named: "click-click")
                         path.append(AppRoute.treasure)
                     } label: {
                         Text("Your Treasures")
@@ -73,7 +73,7 @@ struct StartView: View {
                                                startPoint: .top,
                                                endPoint: .bottom)
                             )
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
                             .cornerRadius(30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 30)
@@ -88,7 +88,7 @@ struct StartView: View {
                         // Info-button
                         Button(action: {
                             showInfo = true
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                         }) {
                             ZStack {
                                 Circle()
@@ -106,7 +106,7 @@ struct StartView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
                             }
                         }
 
@@ -114,7 +114,7 @@ struct StartView: View {
 
                         // profile button
                         Button {
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                             path.append(AppRoute.profile)
                         } label: {
                             ZStack {
@@ -133,12 +133,14 @@ struct StartView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
                             }
                         }
                     }
                     .padding(.horizontal, 50)
                     .padding(.bottom, 30)
+                }.onAppear{
+                    SoundManager.shared.playBackGroundSound(named: "backgroundMusic")
                 }
 
                 // Popup overlay – Shows upon over all.
@@ -149,9 +151,11 @@ struct StartView: View {
                     VStack(spacing: 20) {
                         Text("INFO")
                             .font(.system(size: 24, weight: .bold, design: .serif))
+                            .foregroundColor(Color.black)
 
                         Text("The Cursed Map är ett mystiskt äventyr där du utforskar förbannade områden, samlar skatter och löser Quiz. Du får själv ge dig ut på en promenad för att hitta skattkistorna, med hjälp av kartan. När du hittat en kista och du löst quizet får du skatten i kistan, men om du inte löser det kan du kanske bli skrämd 👻. Så frågan är VÅGAR DU?!")
                             .font(.system(size: 20, weight: .medium, design: .serif))
+                            .foregroundColor(Color.black)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
 
@@ -159,7 +163,7 @@ struct StartView: View {
 
                         Button("OK") {
                             showInfo = false
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                         }
                         .font(.system(size: 24, weight: .bold, design: .serif))
                         .padding()
