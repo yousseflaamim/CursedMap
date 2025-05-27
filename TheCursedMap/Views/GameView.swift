@@ -11,6 +11,7 @@ import SwiftData
 
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
+    @StateObject private var treasureVM = TreasureViewModel()
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -27,7 +28,10 @@ struct GameView: View {
         ZStack {
             Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: chests) { chest in
                 MapAnnotation(coordinate: chest.coordinate) {
-                    Image(chest.isFound ? "open-chest1" : "closed-chest")
+
+                    
+                    Image(chest.isFound ? "openChest1" : "closedChest")
+
                         .resizable()
                         .frame(width: 30, height: 30)
                         .foregroundColor(chest.isFound ? .green : .brown)
@@ -78,11 +82,15 @@ struct GameView: View {
         
         // Presentera QuizView modalt när en kista hittas
         .sheet(isPresented: $showingQuiz) {
+
+            QuizView(treasureVM: treasureVM) // and opens and saves it to firestore
+
             if let question = quizQuestionForCurrentChest {
                 QuizView(quizQuestion: question)
             } else {
                 Text("Kunde inte ladda quizfråga.")
             }
+
         }
     }
 

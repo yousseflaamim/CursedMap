@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "open-chest1.png",
+      "filename" : "closedChest.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

@@ -23,23 +23,22 @@ struct TreasureView: View {
             
             VStack{
                 HStack{
-                    Image("open-chest2") // en mindre öppnad kista än den andra som blev förstor
+                    Image("openChest1") // en mindre öppnad kista än den andra som blev förstor
                         .padding()
-                    Text("10") // få in antal öppnade kistor här senare
-                        .foregroundColor(.gray)
+                    Text("\(treasureViewModel.openedTreasure)")                  .foregroundColor(.gray)
                         .padding()
                     Spacer()
-                        Image("coin1")
-                    Text("100")  // få in antal coins användaren har här senare
+                        Image("coinpile")
+                    Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
                         .padding(20)
                 }
                 HStack{
-                    Image("open-chest1")
+                    Image("openChest")
                         .padding(.bottom)
                     Text("Your Treasures!")
                         .font(.system(size: 24, weight: .medium, design: .serif))
-                        .foregroundColor(Color.white)
+                        .foregroundColor(Color.red)
                         .padding(.bottom)
                 }
                 
@@ -61,7 +60,7 @@ struct TreasureView: View {
                 
                 List{
                     HStack{
-                        Image("open-chest1")
+                        Image("openChest")
                         Text("Första kistan öpnnad nära göta ....")
                             .font(.system(size: 16, weight: .medium, design: .serif))
                     }

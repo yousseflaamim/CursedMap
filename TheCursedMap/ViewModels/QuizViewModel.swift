@@ -8,11 +8,22 @@ import Foundation
 import SwiftUI
 
 final class QuizViewModel: ObservableObject {
+    
+    @Published var treasureVM: TreasureViewModel? = nil // to update levelprogress in firestore
+    
     @Published var currentQuestion: QuizQuestion?
     @Published var showExplanation: Bool = false
     @Published var lastAnswerWasCorrect: Bool?
     
+
+    init(treasureVM: TreasureViewModel? = nil) { // also to update levelprogress in firestore
+           self.treasureVM = treasureVM
+           loadQuestions()
+       }
+    
+
     static let predefinedQuestions: [QuizQuestion] = [
+
         QuizQuestion(questionText: "Vilken färg har blodet?", options: ["Grön", "Gul", "Röd", "Blå"], correctAnswerIndex: 2, explanation: "Blod är rött på grund av hemoglobin och järn."),
         QuizQuestion(questionText: "Vilket organ pumpar blod?", options: ["Levern", "Lungorna", "Hjärtat", "Njuren"], correctAnswerIndex: 2, explanation: "Hjärtat är en muskel som pumpar blod genom kroppen."),
         QuizQuestion(questionText: "Vad heter den fiktiva karaktären som bor i en kista?", options: ["Drakula", "Frankenstein", "Jack Sparrow", "Spöket Laban"], correctAnswerIndex: 3, explanation: "Spöket Laban är en vänlig karaktär som bor i ett linneskåp i ett slott."),
@@ -29,12 +40,23 @@ final class QuizViewModel: ObservableObject {
         guard let question = currentQuestion, !showExplanation else { return }
 
         let isCorrect = (optionIndex == question.correctAnswerIndex)
-         lastAnswerWasCorrect = isCorrect
-         if isCorrect {
-             print("Korrekt svar! Poäng: +1")
-         } else {
-             print("Fel svar.")
-         }
-         showExplanation = true
-     }
+
+        lastAnswerWasCorrect = isCorrect
+        if isCorrect {
+            score += 1
+            treasureVM?.openChest() // opens chest in treasureViewModel to save to firestore
+        }
+        showExplanation = true
+
+        // Gå till nästa fråga efter en kort fördröjning
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.currentQuestionIndex += 1
+            self.presentNextQuestion()
+        }
+    }
+
+    func resetQuiz() {
+        startNewQuiz()
+    }
+
 }
