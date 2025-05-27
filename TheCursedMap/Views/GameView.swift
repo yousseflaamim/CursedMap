@@ -81,10 +81,8 @@ struct GameView: View {
         .onReceive(locationManager.$userLocation) { location in
             guard let location = location else { return }
 
-            region = MKCoordinateRegion(
-                center: location,
-                span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
-            )
+            region.center = location
+
 
             if !chestsGenerated {
                 generateChests(around: location)
