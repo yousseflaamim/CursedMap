@@ -44,12 +44,13 @@ struct WrongAnswerView: View {
                 
                     
                     Button("HOPPA ÖVER") {
+                        SoundManager.shared.playButtonSound(named: "click-click")
                         presentationMode.wrappedValue.dismiss()
                     }
-                    .font(.system(size: 24, weight: .medium, design: .serif))
+                    .font(.system(size: 18, weight: .medium, design: .serif))
                     .padding()
                     .background(Color.black)
-                    .foregroundColor(.red)
+                    .foregroundColor(.gray)
                     .cornerRadius(10)
                     .padding(.bottom, 40)
                 
@@ -71,7 +72,7 @@ struct WrongAnswerView: View {
               }
 
               videoPlayer.replaceCurrentItem(with: AVPlayerItem(url: url))
-        SoundManager.shared.playSound(named: clip.sound) // Du kan också slumpa ljud om du vill!
+        SoundManager.shared.playEffectSound(named: clip.sound)
               videoPlayer.play()
 
               DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

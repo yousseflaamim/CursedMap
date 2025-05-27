@@ -39,7 +39,7 @@ struct EditProfileView: View {
                 
                 Button("Spara") {
                                 // logik att spara till Firebase här
-                                SoundManager.shared.playSound(named: "click-click")
+                                SoundManager.shared.playButtonSound(named: "click-click")
                                 dismiss()
                     
                             }
@@ -59,7 +59,7 @@ struct EditProfileView: View {
                 .padding(.bottom)
                 
                             Button("Avbryt") {
-                                SoundManager.shared.playSound(named: "click-click")
+                                SoundManager.shared.playButtonSound(named: "click-click")
                                 dismiss()
                             }
                             .font(.system(size: 24, weight: .medium, design: .serif))

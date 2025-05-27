@@ -11,6 +11,7 @@ struct ProfileView: View {
     
     @State var showAlertDelete = false
     @State var showEditSheet = false
+    @State var showSoundSettings = false
     @State private var deleteErrorMessage: String? = nil
     @StateObject var profileViewModel = ProfileViewModel()
     @StateObject var treasureViewModel = TreasureViewModel()
@@ -74,9 +75,9 @@ struct ProfileView: View {
                 .padding([.leading, .trailing, .bottom])
                 HStack{
                     Button(action: {
-                        soundManager.toggleSound()
+                        showSoundSettings = true
                     }) {
-                        Image(systemName: soundManager.isSoundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                        Image(systemName: "megaphone")
                             .resizable()
                             .frame(width: 25, height: 25)
                             .foregroundColor(.gray)
@@ -157,7 +158,9 @@ struct ProfileView: View {
             }
         }.sheet(isPresented: $showEditSheet) {
             EditProfileView()
-               
+        }
+        .sheet(isPresented: $showSoundSettings) {
+            SoundSettingsView()
         }
     }
 }
