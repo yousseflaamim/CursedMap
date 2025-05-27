@@ -66,7 +66,7 @@ struct WrongAnswerView: View {
     func playRandomGif(){
         guard let clip = scaryClips.randomElement(),
               let url = Bundle.main.url(forResource: clip.video, withExtension: "mp4") else {
-                  print("❌ Kunde inte slumpa fram eller hitta en video")
+                  print("Kunde inte slumpa fram eller hitta en video")
                   return
               }
 
