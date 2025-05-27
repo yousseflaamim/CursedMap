@@ -33,7 +33,7 @@ final class QuizViewModel: ObservableObject {
         QuizQuestion(questionText: "Vad är en 'banshee' enligt irländsk folktro?", options: ["En god fe", "Ett kvinnligt spöke som varslar döden", "En typ av älva", "En skogsvarelse"], correctAnswerIndex: 1, explanation: "En banshee är ett kvinnligt andeväsen som varslar döden genom att skrika eller jämra sig.")
     ]
     
-    init(question: QuizQuestion, treasureVm: TreasureViewModel?) {
+    init(question: QuizQuestion, treasureVM: TreasureViewModel?) {
         self.currentQuestion = question
         self.treasureVM = treasureVM
     }
@@ -44,9 +44,8 @@ final class QuizViewModel: ObservableObject {
         let isCorrect = (optionIndex == question.correctAnswerIndex)
         lastAnswerWasCorrect = isCorrect
         if isCorrect {
-           // score += 1
             treasureVM?.openChest() // opens chest in treasureViewModel to save to firestore
-        }else {
+        } else {
             showWrongAnswerView = true
         }
         showExplanation = true

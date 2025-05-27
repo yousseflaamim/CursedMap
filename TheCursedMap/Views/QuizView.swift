@@ -9,25 +9,11 @@ import SwiftUI
 struct QuizView: View {
     
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
+    @StateObject private var viewModel: QuizViewModel
     
-   // let quizQuestion: QuizQuestion
-    
-   @StateObject private var viewModel: QuizViewModel
-
-
-  //  @StateObject private var viewModel = QuizViewModel()
-   // @ObservedObject var treasureVM: TreasureViewModel
-    
-   // init(treasureVM: TreasureViewModel) {
-   //     self.treasureVM = treasureVM
-    //    _viewModel = StateObject(wrappedValue: QuizViewModel(treasureVM: treasureVM))
-   // }
-    
-    init(question: QuizQuestion, treasureVm: TreasureViewModel) {
-        //self.quizQuestion = quizQuestion
-        _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, treasureVm: treasureVm))
+    init(question: QuizQuestion, treasureVM: TreasureViewModel) {
+        _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, treasureVM: treasureVM))
     }
-
 
     var body: some View {
         ZStack {
