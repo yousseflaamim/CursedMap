@@ -9,6 +9,27 @@ import MapKit
 import CoreLocation
 import SwiftData
 
+enum MapItem: Identifiable {
+    case chest(Chest)
+    case user(CLLocationCoordinate2D)
+
+    var id: UUID {
+        switch self {
+        case .chest(let chest): return chest.id
+        case .user: return MapItem.userId // Use static UUID
+        }
+    }
+
+    var coordinate: CLLocationCoordinate2D {
+        switch self {
+        case .chest(let chest): return chest.coordinate
+        case .user(let coord): return coord
+        }
+    }
+
+    private static let userId = UUID() // only generated once
+}
+
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
     @StateObject private var treasureVM = TreasureViewModel()
@@ -26,17 +47,25 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: chests) { chest in
-                MapAnnotation(coordinate: chest.coordinate) {
+            Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: mapItems) { item in
+                MapAnnotation(coordinate: item.coordinate) {
+                    switch item {
+                    case .chest(let chest):
+                        Image(chest.isFound ? "openChest" : "closedChest")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(chest.isFound ? .green : .brown)
+                            .scaleEffect(chest.isFound ? 1.2 : 1.0)
+                            .animation(.spring(), value: chest.isFound)
 
-                    
-                    Image(chest.isFound ? "openChest1" : "closedChest")
-
-                        .resizable()
-                        .frame(width: 30, height: 30)
-                        .foregroundColor(chest.isFound ? .green : .brown)
-                        .scaleEffect(chest.isFound ? 1.2 : 1.0)
-                        .animation(.spring(), value: chest.isFound)
+                    case .user:
+                        Image("1avatar1")
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                            .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                    }
                 }
             }
             .edgesIgnoringSafeArea(.all)
@@ -88,6 +117,14 @@ struct GameView: View {
                 Text("Kunde inte ladda quizfråga.")
             }
         }
+    }
+    
+    private var mapItems: [MapItem] {
+        var items = chests.map { MapItem.chest($0) }
+        if let userLocation = locationManager.userLocation {
+            items.append(.user(userLocation))
+        }
+        return items
     }
 
     private func generateChests(around location: CLLocationCoordinate2D) {
