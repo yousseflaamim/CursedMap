@@ -82,15 +82,11 @@ struct GameView: View {
         
         // Presentera QuizView modalt när en kista hittas
         .sheet(isPresented: $showingQuiz) {
-
-            QuizView(treasureVM: treasureVM) // and opens and saves it to firestore
-
             if let question = quizQuestionForCurrentChest {
-                QuizView(quizQuestion: question)
+                QuizView(question: question, treasureVm: treasureVM)
             } else {
                 Text("Kunde inte ladda quizfråga.")
             }
-
         }
     }
 

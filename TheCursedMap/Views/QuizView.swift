@@ -10,22 +10,22 @@ struct QuizView: View {
     
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
     
-    let quizQuestion: QuizQuestion
+   // let quizQuestion: QuizQuestion
     
-    @StateObject private var viewModel: QuizViewModel
+   @StateObject private var viewModel: QuizViewModel
 
 
-    @StateObject private var viewModel = QuizViewModel()
-    @ObservedObject var treasureVM: TreasureViewModel
+  //  @StateObject private var viewModel = QuizViewModel()
+   // @ObservedObject var treasureVM: TreasureViewModel
     
-    init(treasureVM: TreasureViewModel) {
-           self.treasureVM = treasureVM
-           _viewModel = StateObject(wrappedValue: QuizViewModel(treasureVM: treasureVM))
-       }
-
-    init(quizQuestion: QuizQuestion) {
-        self.quizQuestion = quizQuestion
-        _viewModel = StateObject(wrappedValue: QuizViewModel(question: quizQuestion))
+   // init(treasureVM: TreasureViewModel) {
+   //     self.treasureVM = treasureVM
+    //    _viewModel = StateObject(wrappedValue: QuizViewModel(treasureVM: treasureVM))
+   // }
+    
+    init(question: QuizQuestion, treasureVm: TreasureViewModel) {
+        //self.quizQuestion = quizQuestion
+        _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, treasureVm: treasureVm))
     }
 
 

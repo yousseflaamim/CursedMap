@@ -9,16 +9,17 @@ import SwiftUI
 
 final class QuizViewModel: ObservableObject {
     
-    @Published var treasureVM: TreasureViewModel? = nil // to update levelprogress in firestore
-    
     @Published var currentQuestion: QuizQuestion?
     @Published var showExplanation: Bool = false
     @Published var lastAnswerWasCorrect: Bool?
+    @Published var showWrongAnswerView: Bool = false
+    
+    @Published var treasureVM: TreasureViewModel? = nil // to update levelprogress in firestore
     
 
     init(treasureVM: TreasureViewModel? = nil) { // also to update levelprogress in firestore
            self.treasureVM = treasureVM
-           loadQuestions()
+          // loadQuestions()
        }
     
 
@@ -32,31 +33,33 @@ final class QuizViewModel: ObservableObject {
         QuizQuestion(questionText: "Vad är en 'banshee' enligt irländsk folktro?", options: ["En god fe", "Ett kvinnligt spöke som varslar döden", "En typ av älva", "En skogsvarelse"], correctAnswerIndex: 1, explanation: "En banshee är ett kvinnligt andeväsen som varslar döden genom att skrika eller jämra sig.")
     ]
     
-    init(question: QuizQuestion) {
+    init(question: QuizQuestion, treasureVm: TreasureViewModel?) {
         self.currentQuestion = question
+        self.treasureVM = treasureVM
     }
     
     func submitAnswer(optionIndex: Int) {
         guard let question = currentQuestion, !showExplanation else { return }
 
         let isCorrect = (optionIndex == question.correctAnswerIndex)
-
         lastAnswerWasCorrect = isCorrect
         if isCorrect {
-            score += 1
+           // score += 1
             treasureVM?.openChest() // opens chest in treasureViewModel to save to firestore
+        }else {
+            showWrongAnswerView = true
         }
         showExplanation = true
 
         // Gå till nästa fråga efter en kort fördröjning
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.currentQuestionIndex += 1
-            self.presentNextQuestion()
+        //DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+         //   self.currentQuestionIndex += 1
+          //  self.presentNextQuestion()
         }
-    }
+  //  }
 
-    func resetQuiz() {
-        startNewQuiz()
-    }
+  //  func resetQuiz() {
+   //     startNewQuiz()
+   // }
 
 }
