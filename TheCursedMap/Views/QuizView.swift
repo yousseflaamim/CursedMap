@@ -78,6 +78,33 @@ struct QuizView: View {
                 }
             }
             .padding()
+            .onAppear {
+            }
         }
+        .fullScreenCover(isPresented: $viewModel.showWrongAnswerView) {
+            WrongAnswerView()
+        }
+    }
+    
+}
+
+// Liten hjälpvy för att visa quizresultatet
+struct QuizResultView: View {
+    let score: Int
+    let totalQuestions: Int
+
+    var body: some View {
+        VStack {
+            Text("Quiz avklarat!")
+                .font(.largeTitle)
+                .foregroundColor(.white)
+            Text("Din poäng: \(score) av \(totalQuestions)")
+                .font(.title)
+                .foregroundColor(.white)
+                .padding(.top, 10)
+        }
+        .padding()
+        .background(Color.purple.opacity(0.8))
+        .cornerRadius(15)
     }
 }
