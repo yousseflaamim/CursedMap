@@ -133,7 +133,7 @@ struct ProfileView: View {
                                 .scaledToFit()
                                 .frame(width: 30, height: 30)
                                 .foregroundColor(.gray)
-                        
+                               
                     }
                     .padding(.horizontal,20)
                 }
