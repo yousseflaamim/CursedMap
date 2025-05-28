@@ -11,6 +11,7 @@ enum AppRoute: Hashable {
     case profile
     case treasure
     case map
+    case shop
 }
 
 struct StartView: View {
@@ -28,14 +29,46 @@ struct StartView: View {
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
+                
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            SoundManager.shared.playSound(named: "click-click")
+                            path.append(AppRoute.shop)
+                        }) {
+                            ZStack {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                                        startPoint: .top,
+                                                        endPoint: .bottom)
+                                    )
+                                    .frame(width: 60, height: 60)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.black, lineWidth: 0.5)
+                                    )
+                                Image(systemName: "cart")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(.black)
+                            }
+                        }
+                        .padding(.trailing, 20)
+                        .padding(.top, 5)
+                    }
+                    Spacer()
+                }
 
                 VStack {
                     // Logo
                     Image("CursedMapLogo")
                         .resizable()
                         .frame(width: 300, height: 300)
-                        .padding(.top)
-                        .padding(.bottom, -20)
+                        .padding(.top, 40)
+                        .padding(.bottom, -40)
 
                     Spacer()
                     
@@ -186,6 +219,8 @@ struct StartView: View {
                        TreasureView()
                    case.map:
                        GameView()
+                   case.shop:
+                       ShopView()
                    }
                }
    
