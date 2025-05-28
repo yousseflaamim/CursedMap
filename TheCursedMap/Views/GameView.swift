@@ -47,7 +47,7 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: mapItems) { item in
+            Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: false, annotationItems: mapItems) { item in
                 MapAnnotation(coordinate: item.coordinate) {
                     switch item {
                     case .chest(let chest):
