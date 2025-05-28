@@ -53,7 +53,7 @@ struct StartView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color(red: 0.4, green: 0.0, blue: 0.0))
                             }
                         }
                         .padding(.trailing, 20)
@@ -84,7 +84,7 @@ struct StartView: View {
                                                startPoint: .top,
                                                endPoint: .bottom)
                             )
-                            .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
+                            .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                             .cornerRadius(30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 30)
@@ -106,7 +106,7 @@ struct StartView: View {
                                                startPoint: .top,
                                                endPoint: .bottom)
                             )
-                            .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
+                            .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                             .cornerRadius(30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 30)
@@ -139,7 +139,7 @@ struct StartView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
+                                    .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                             }
                         }
 
@@ -166,7 +166,7 @@ struct StartView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 30, height: 30)
-                                    .foregroundColor(Color(red: 0.8, green: 0.0, blue: 0.0))
+                                    .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                             }
                         }
                     }

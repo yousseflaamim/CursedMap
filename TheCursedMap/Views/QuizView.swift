@@ -19,7 +19,7 @@ struct QuizView: View {
         ZStack {
             Color("GrayBlack")
                 .ignoresSafeArea()
-
+            
             VStack {
                 if let question = viewModel.currentQuestion {
                     Text(question.questionText)

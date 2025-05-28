@@ -50,7 +50,7 @@ struct EditProfileView: View {
                                    startPoint: .top,
                                    endPoint: .bottom)
                 )
-                .foregroundColor(.black)
+                .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                 .cornerRadius(30)
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
@@ -69,7 +69,7 @@ struct EditProfileView: View {
                                                startPoint: .top,
                                                endPoint: .bottom)
                             )
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                             .cornerRadius(30)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 30)
