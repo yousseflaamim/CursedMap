@@ -35,17 +35,19 @@ struct ProfileView: View {
             
             VStack {
                 HStack{
-                    Image("openChest1") // en mindre öppnad kista
-                        .padding()
+                    Image("openChest1") // en mindre öppnad kista än den andra som blev förstor
                     Text("\(treasureViewModel.openedTreasure)")
+                        .font(.system(size: 22, weight: .medium, design: .serif))
                         .foregroundColor(.gray)
-                        .padding()
+                      
                     Spacer()
                         Image("coinpile")
                     Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
-                        .padding(20)
+                        .font(.system(size: 22, weight: .medium, design: .serif))
+              
                 }
+                .padding(.horizontal)
                 HStack{
                     Image("profile-image")
                         .padding()
@@ -63,9 +65,15 @@ struct ProfileView: View {
                 
                 // ProgressView for Level up
                 VStack(alignment: .leading) {
-                    Text("Level \(treasureViewModel.level)")
-                        .foregroundColor(.yellow)
-                        .font(.system(size: 18, weight: .medium, design: .serif))
+                    HStack{
+                        Text("Level: \(treasureViewModel.level)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                        Spacer()
+                        Text("XP: \(treasureViewModel.xp)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                    }
 
                     ProgressView(value: progress)
                         .progressViewStyle(LinearProgressViewStyle())
