@@ -50,8 +50,22 @@ struct LoginView: View {
                         CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
                             .padding(.bottom)
                         
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                path.append(AuthRoute.resetPassword)
+                            }) {
+                                Text("Forgot Password?")
+                                    .font(.footnote)
+                                    .foregroundColor(.white)
+                                    .bold()
+                                    .padding(.bottom, 10)
+                            }
+                        }
+
+                        
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
-                            SoundManager.shared.playButtonSound(named: "click-click")
+                            SoundManager.shared.playSound(named: "click-click")
                             HUDManager.showLoading("Is logging in...")
 
                             viewModel.login { success in
@@ -88,7 +102,7 @@ struct LoginView: View {
                     VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
-                            SoundManager.shared.playButtonSound(named: "click-click")
+                            SoundManager.shared.playSound(named: "click-click")
                         }
                     }
                     .padding()
@@ -101,8 +115,11 @@ struct LoginView: View {
                     RegisterView {
                         onLoginSuccess()
                     }
+                case .resetPassword:
+                    ResetPasswordView(authService: FirebaseAuthService())
                 }
             }
+
         }
         .tint(.black)
     }
@@ -110,7 +127,9 @@ struct LoginView: View {
 
 enum AuthRoute: Hashable {
     case register
+    case resetPassword
 }
+
 
 #Preview {
     LoginView(onLoginSuccess: {})
