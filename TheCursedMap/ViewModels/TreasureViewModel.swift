@@ -14,37 +14,49 @@ class TreasureViewModel: ObservableObject {
     struct PlayerProgress: Codable {
         var coins: Int
         var level: Int
+        var xp: Int
         var openedTreasure: Int
     }
     
     @Published var openedTreasure: Int = 0
     @Published var coins: Int = 0
     @Published var level: Int = 0
-    
+    @Published var xp: Int = 0
+   
    init(){
         loadProgressFromFirestore()
     }
     
-    var maxCoinsPerLevel: Int {
-           return 100
+    var maxXpPerLevel: Int {
+           return 150
        }
 
        var progressToNextLevel: Double {
-           Double(coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel)
+           Double(xp % maxXpPerLevel) / Double(maxXpPerLevel)
        }
     
-// koppla ihop senare med antal fakriska öppnade kistor från kartan
        func openChest() {
            openedTreasure += 1
-             coins += 10
-             updateLevel()
-             saveProgressToFirestore()
-       }
-
-       private func updateLevel() {
-           level = (coins / maxCoinsPerLevel) + 1
+           randomXp()
+           randomCoins()
+           updateLevel()
+           saveProgressToFirestore()
        }
     
+    func randomCoins(){
+        let reward = Int.random(in: 5...30)
+        coins += reward
+    }
+    
+    func randomXp(){
+        let xpReward = Int.random(in: 10...30)
+        xp += xpReward
+    }
+    func updateLevel() {
+        level = (xp / maxXpPerLevel) + 1
+          randomCoins()
+       }
+  
     // saves coins, level and the amount of opened chests to firestore
     func saveProgressToFirestore() {
         guard let userId = Auth.auth().currentUser?.uid else {
@@ -52,7 +64,7 @@ class TreasureViewModel: ObservableObject {
             return
         }
 
-        let progress = PlayerProgress(coins: coins, level: level, openedTreasure: openedTreasure)
+        let progress = PlayerProgress(coins: coins, level: level, xp: xp, openedTreasure: openedTreasure)
 
         do {
             let data = try Firestore.Encoder().encode(progress)
@@ -75,6 +87,7 @@ class TreasureViewModel: ObservableObject {
             if let data = try? snapshot?.data(as: PlayerProgress.self) {
                 self.coins = data.coins
                 self.level = data.level
+                self.xp = data.xp
                 self.openedTreasure = data.openedTreasure
             } else {
                 print("Could not read data or any data does exist.")
