@@ -40,9 +40,9 @@ struct QuizView: View {
                             .padding(.bottom, 20)
 
                         ForEach(question.options.indices, id: \.self) { index in
-                            Button(action: { // Explicita action-parametern
+                            Button(action: {
                                 viewModel.submitAnswer(optionIndex: index)
-                            }, label: { // Explicita label-parametern
+                            }, label: {
                                 Text(question.options[index])
                                     .font(.headline)
                                     .frame(maxWidth: .infinity)
@@ -50,7 +50,7 @@ struct QuizView: View {
                                     .background(Color.blue)
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
-                            }) // Avslutande parentes för Button-init
+                            }) 
                             .padding(.bottom, 5)
                             .disabled(viewModel.showExplanation)
                         }

@@ -98,10 +98,10 @@ struct GameView: View {
                     
                     SoundManager.shared.playEffectSound(named: "openChest") // Play openChest sound before showing quiz
                     if let question = foundChest.associatedQuizQuestion {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // wait 1 second then show quiz
+                        //DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // wait 1 second then show quiz
                             quizQuestionForCurrentChest = question
                             showingQuiz = true // Visa quizzen!
-                        }
+                       // }
                     } else {
                         print("Fel: Hittad kista (\(foundChest.name)) saknar tilldelad quizfråga.")
                     }
@@ -113,6 +113,7 @@ struct GameView: View {
         .sheet(isPresented: $showingQuiz) {
             if let question = quizQuestionForCurrentChest {
                 QuizView(question: question, treasureVM: treasureVM)
+                    .environmentObject(treasureVM)
             } else {
                 Text("Kunde inte ladda quizfråga.")
             }
