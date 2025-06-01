@@ -24,7 +24,7 @@ struct TreasureRewardView: View {
 
             VStack {
                 // MARK: Din skattbild här
-                Image("gold_pile") // Byt ut "gold_pile" mot namnet på din skattbild i Assets!
+                Image("openChest1") // Byt ut "gold_pile" mot namnet på din skattbild i Assets!
                     .resizable()
                     .scaledToFit()
                     .frame(width: 150, height: 150)
