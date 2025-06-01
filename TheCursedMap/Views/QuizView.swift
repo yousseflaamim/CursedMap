@@ -11,7 +11,10 @@ struct QuizView: View {
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
     @StateObject private var viewModel: QuizViewModel
     
+    let quizQuestion: QuizQuestion
+    
     init(question: QuizQuestion, treasureVM: TreasureViewModel) {
+        self.quizQuestion = question
         _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, treasureVM: treasureVM))
     }
 
@@ -62,12 +65,14 @@ struct QuizView: View {
                                 .padding(.top, 5)
                         }
                         
-                        Button("Stäng") {
-                            dismiss()
+                        if !viewModel.showTreasureRewardView && !viewModel.showWrongAnswerView {
+                            Button("Stäng") {
+                                dismiss()
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.red)
+                            .padding(.top, 20)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
-                        .padding(.top, 20)
                     }
                 } else {
                     Text("Ingen fråga hittades för denna kista.")
@@ -79,8 +84,22 @@ struct QuizView: View {
             }
         }
         .fullScreenCover(isPresented: $viewModel.showWrongAnswerView) {
-            WrongAnswerView()
+            // VIKTIGT: WrongAnswerView måste ha en dismissAction closure och anropa den.
+            WrongAnswerView(dismissAction: {
+                viewModel.showWrongAnswerView = false // Dölj WrongAnswerView
+                dismiss() // Stäng sedan QuizView
+            })
         }
+        
+        if viewModel.showTreasureRewardView {
+            TreasureRewardView(dismissAction: {
+                viewModel.showTreasureRewardView = false
+                dismiss()
+            })
+            .transition(.scale.animation(.spring())) // Enkel animation
+            .zIndex(1)
+        }
+        
     }
     
 }
