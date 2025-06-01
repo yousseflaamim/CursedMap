@@ -20,9 +20,9 @@ struct ProfileView: View {
     
   
     var body: some View {
-        // in use of progressView
-        let maxCoinsPerLevel = 100
-        let progress = min(Double(treasureViewModel.coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel), 1.0)
+        // in use of progressView for xp
+        let maxXpPerLevel = 150
+        let progress = min(Double(treasureViewModel.coins % maxXpPerLevel) / Double(maxXpPerLevel), 1.0)
         
         ZStack {
             // Bakground
