@@ -6,33 +6,38 @@
 //
 
 import SwiftUI
+import AVKit
 
 struct TreasureView: View {
     
     @StateObject var treasureViewModel = TreasureViewModel()
-    
+  
     var body: some View {
         
         // in use of progressView
-        let maxCoinsPerLevel = 100
-        let progress = min(Double(treasureViewModel.coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel), 1.0)
+        let maxXpPerLevel = 150
+        let progress = min(Double(treasureViewModel.xp % maxXpPerLevel) / Double(maxXpPerLevel), 1.0)
         
         ZStack{
-         Color("GrayBlack")
+            Color("GrayBlack")
                 .ignoresSafeArea()
+           
             
             VStack{
                 HStack{
                     Image("openChest1") // en mindre öppnad kista än den andra som blev förstor
-                        .padding()
-                    Text("\(treasureViewModel.openedTreasure)")                  .foregroundColor(.gray)
-                        .padding()
+                    Text("\(treasureViewModel.openedTreasure)")
+                        .font(.system(size: 22, weight: .medium, design: .serif))
+                        .foregroundColor(.gray)
+                    
                     Spacer()
-                        Image("coinpile")
+                    Image("coinpile")
                     Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
-                        .padding(20)
+                        .font(.system(size: 22, weight: .medium, design: .serif))
+                    
                 }
+                .padding(.horizontal)
                 VStack{
                     Image("yourTreasures")
                         .resizable()
@@ -45,19 +50,26 @@ struct TreasureView: View {
                 Spacer()
                 // ProgressView for Level up
                 VStack(alignment: .leading) {
-                    Text("Level \(treasureViewModel.level)")
-                        .foregroundColor(.yellow)
-                        .font(.system(size: 18, weight: .medium, design: .serif))
-
+                    HStack{
+                        Text("Level: \(treasureViewModel.level)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                        Spacer()
+                        Text("XP: \(treasureViewModel.xp)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                    }
+                    
                     ProgressView(value: progress)
                         .progressViewStyle(LinearProgressViewStyle())
                         .frame(height: 10)
                         .tint(.yellow)
+                    
                 }
                 .padding([.leading, .trailing, .bottom])
-                
+            
                 Spacer()
-                
+           
                 List{
                     HStack{
                         Image("openChest")
@@ -74,12 +86,14 @@ struct TreasureView: View {
                                    endPoint: .bottom)
                 )
                 .scrollContentBackground(.hidden)
-              
+                
+                }
+           
+           
             }
+        
         }
     }
-}
-
-#Preview {
+/*#Preview {
     TreasureView()
-}
+}*/

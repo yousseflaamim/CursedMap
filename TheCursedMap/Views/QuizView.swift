@@ -10,9 +10,7 @@ struct QuizView: View {
     
     @Environment(\.dismiss) var dismiss // För att stänga quizvyn
     @StateObject private var viewModel: QuizViewModel
-    
-    let quizQuestion: QuizQuestion
-    
+   
     init(question: QuizQuestion, treasureVM: TreasureViewModel) {
         self.quizQuestion = question
         _viewModel = StateObject(wrappedValue: QuizViewModel(question: question, treasureVM: treasureVM))
@@ -22,7 +20,7 @@ struct QuizView: View {
         ZStack {
             Color("GrayBlack")
                 .ignoresSafeArea()
-
+           
             VStack {
                 if let question = viewModel.currentQuestion {
                     Text(question.questionText)
@@ -47,10 +45,10 @@ struct QuizView: View {
                         .padding(.bottom, 5)
                         .disabled(viewModel.showExplanation) // Inaktivera knappar under förklaring
                     }
-
                     // Förklaring och "Stäng"-knapp
                     if viewModel.showExplanation {
                         if let wasCorrect = viewModel.lastAnswerWasCorrect {
+                          
                             Text(wasCorrect ? "Rätt svar!" : "Fel svar!")
                                 .font(.title3)
                                 .foregroundColor(wasCorrect ? .green : .red)
@@ -124,3 +122,4 @@ struct QuizResultView: View {
         .cornerRadius(15)
     }
 }
+

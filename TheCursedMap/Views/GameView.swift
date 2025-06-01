@@ -83,7 +83,6 @@ struct GameView: View {
 
             region.center = location
 
-
             if !chestsGenerated {
                 generateChests(around: location)
                 chestsGenerated = true
@@ -97,9 +96,12 @@ struct GameView: View {
                 if let foundChest = chests.first(where: { $0.id == chestId }) {
                     print("GameView mottog notis om hittad kista: \(foundChest.name)")
                     
+                    SoundManager.shared.playEffectSound(named: "openChest") // Play openChest sound before showing quiz
                     if let question = foundChest.associatedQuizQuestion {
-                        quizQuestionForCurrentChest = question
-                        showingQuiz = true // Visa quizzen!
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // wait 1 second then show quiz
+                            quizQuestionForCurrentChest = question
+                            showingQuiz = true // Visa quizzen!
+                        }
                     } else {
                         print("Fel: Hittad kista (\(foundChest.name)) saknar tilldelad quizfråga.")
                     }
@@ -128,6 +130,7 @@ struct GameView: View {
     private func generateChests(around location: CLLocationCoordinate2D) {
         // Hämta en kopia av de fördefinierade frågorna och blanda dem
         var availableQuestions = QuizViewModel.predefinedQuestions.shuffled()
+        
 
         chests = (0..<5).map { i in
             let randomLat = location.latitude  + Double.random(in: -0.005...0.005)
@@ -138,6 +141,7 @@ struct GameView: View {
             return Chest(coordinate: CLLocationCoordinate2D(latitude: randomLat, longitude: randomLon),
                          name: "Mystisk Kista \(i+1)",
                          associatedQuizQuestion: questionToAssign)
+           
         }
         print("GameView genererade \(chests.count) slumpade kistor med tilldelade frågor.")
     }
