@@ -37,6 +37,9 @@ struct WrongAnswerView: View {
             )
             .ignoresSafeArea()
             VStack {
+                Text("Fel Svar!")
+                    .font(.system(size: 24, weight: .medium, design: .serif))
+                    .foregroundColor(Color.red)
                 
                 VideoPlayer(player: videoPlayer)
                     .edgesIgnoringSafeArea(.all)
@@ -78,7 +81,8 @@ struct WrongAnswerView: View {
               videoPlayer.play()
 
               DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                  presentationMode.wrappedValue.dismiss()
+                 // presentationMode.wrappedValue.dismiss()
+                  dismissAction()
               }
           }
     }

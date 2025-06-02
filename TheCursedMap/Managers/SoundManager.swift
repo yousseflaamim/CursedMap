@@ -66,11 +66,28 @@ class SoundManager: ObservableObject  {
                print("Misslyckades spela musik: \(error.localizedDescription)")
            }
     }
+    func playEffectSound(named name: String, completion: (() -> Void)? = nil) {
+        guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
+
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            self.player = player
+            player.play()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + player.duration) {
+                completion?()
+            }
+
+        } catch {
+            print("Kunde inte spela ljud: \(error)")
+            completion?() // Säkerhetskopia
+        }
+    }
     
-    func playEffectSound(named name: String){
+  /*  func playEffectSound(named name: String){
         guard isSoundEnabled && isEffectSoundEnabled else { return }
             playSound(named: name)
-    }
+    }*/
     func playSound(named: String, ext: String = "mp3"){
         
        // guard isSoundEnabled else { return }
