@@ -6,12 +6,52 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseAuth
 
 class ShopViewModel: ObservableObject {
-    @Published var coinBalance: Int = 100
+    @Published var coinBalance: Int = 0
     @Published var selectedAvatar: String = "1avatar1"
     @Published var unlockedAvatars: [String] = []
     @Published var allAvatars: [Avatar] = []
+    
+    
+    init() {
+        loadUserData()
+    }
+    
+    func loadUserData() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        
+        Firestore.firestore().collection("users").document(userId).getDocument { [weak self] snapshot, error in
+            guard let data = snapshot?.data() else {
+                // If no data exists, load default avatars
+                DispatchQueue.main.async {
+                    self?.loadAvatars()
+                }
+                return
+            }
+            
+            DispatchQueue.main.async {
+                self?.coinBalance = data["coins"] as? Int ?? 0
+                self?.selectedAvatar = data["selectedAvatar"] as? String ?? "1avatar1"
+                self?.unlockedAvatars = data["unlockedAvatars"] as? [String] ?? []
+                self?.loadAvatars() // Load avatars AFTER getting Firebase data
+            }
+        }
+    }
+    
+    func saveUserData() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        
+        let userData: [String: Any] = [
+            "coins": coinBalance,
+            "selectedAvatar": selectedAvatar,
+            "unlockedAvatars": unlockedAvatars
+        ]
+        
+        Firestore.firestore().collection("users").document(userId).setData(userData, merge: true)
+    }
     
     func loadAvatars() {
         let avatarCounts: [Int: Int] = [
@@ -50,9 +90,16 @@ class ShopViewModel: ObservableObject {
 
         self.allAvatars = avatars
 
-        self.unlockedAvatars = avatars
+        let freeAvatars = avatars
             .filter { $0.price == 0 }
             .map { $0.imageName }
+
+        for avatar in freeAvatars {
+            if !self.unlockedAvatars.contains(avatar) {
+                self.unlockedAvatars.append(avatar)
+            }
+        }
+
 
         updateUnlockedAvatars()
     }
@@ -63,6 +110,7 @@ class ShopViewModel: ObservableObject {
         unlockedAvatars.append(avatar.imageName)
         selectedAvatar = avatar.imageName
         updateUnlockedAvatars()
+        saveUserData() // Add this line
     }
     
     func isUnlocked(_ name: String) -> Bool {

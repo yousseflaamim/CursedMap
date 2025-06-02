@@ -96,6 +96,7 @@ struct ShopView: View {
                                     .onTapGesture {
                                         if viewModel.isUnlocked(avatar.imageName) {
                                             viewModel.selectedAvatar = avatar.imageName
+                                            viewModel.saveUserData()
                                             animateSelected = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                 animateSelected = false
@@ -130,9 +131,7 @@ struct ShopView: View {
                 )
                 .padding(.horizontal)
             }
-            .onAppear {
-                viewModel.loadAvatars()
-            }
+          
 
             if showPurchasePopup, let avatar = avatarToPurchase {
                 PurchasePopup(
