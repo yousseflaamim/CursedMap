@@ -96,7 +96,7 @@ struct GameView: View {
                 if let foundChest = chests.first(where: { $0.id == chestId }) {
                     print("GameView mottog notis om hittad kista: \(foundChest.name)")
                     
-                    SoundManager.shared.playEffectSound(named: "openChest") // Play openChest sound before showing quiz
+                   SoundManager.shared.playEffectSound(named: "openChest") // Play openChest sound before showing quiz
                     if let question = foundChest.associatedQuizQuestion {
                         //DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // wait 1 second then show quiz
                             quizQuestionForCurrentChest = question

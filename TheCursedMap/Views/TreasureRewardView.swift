@@ -10,8 +10,7 @@ import AVFoundation
 
 struct TreasureRewardView: View {
     let dismissAction: () -> Void
-    @State private var player: AVAudioPlayer? // För ljud
-    
+
     @EnvironmentObject var treasureVM: TreasureViewModel
 
     var body: some View {
@@ -46,27 +45,12 @@ struct TreasureRewardView: View {
             }
         }
         .onAppear {
-            playSound(named: "coin-spill")
+            SoundManager.shared.playEffectSound(named: "coin-spill")
             
             // Stäng popupen automatiskt efter en kort stund (t.ex. 5 sekunder)
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
                 dismissAction()
             }
-        }
-    }
-
-    // Funktion för att spela upp ljud
-    private func playSound(named soundName: String) {
-        guard let url = Bundle.main.url(forResource: soundName, withExtension: "mp3") else {
-            print("Kunde inte hitta ljudfilen: \(soundName).mp3")
-            return
-        }
-
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.play()
-        } catch {
-            print("Kunde inte spela upp ljud: \(error.localizedDescription)")
         }
     }
 }
