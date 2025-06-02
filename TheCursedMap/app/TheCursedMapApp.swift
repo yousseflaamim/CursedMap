@@ -7,6 +7,8 @@
 
 import SwiftUI
 import FirebaseCore
+import GoogleSignIn
+
 
 @main
 struct TheCursedMapApp: App {
@@ -33,4 +35,12 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         FirebaseApp.configure()
         return true
     }
+    //fun login with google
+    
+    func application(_ app: UIApplication, open url: URL,
+                     options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
+    }
+    
 }
+

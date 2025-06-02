@@ -7,6 +7,11 @@
 
 import SwiftUI
 import ProgressHUD
+import GoogleSignInSwift
+import GoogleSignIn
+import GoogleSignInSwift
+
+
 
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
@@ -114,6 +119,23 @@ struct LoginView: View {
                 }
                 .padding()
             }
+            GoogleSignInButton(action: {
+                guard let rootVC = UIApplication.shared.windows.first?.rootViewController else {
+                    return
+                }
+                viewModel.loginWithGoogle(presenting: rootVC) { success in
+                    if success {
+                        HUDManager.showSuccess("Welcome with Google")
+                        onLoginSuccess()
+                    } else {
+                        HUDManager.showError("Google login failed")
+                    }
+                }
+            })
+            .frame(height: 50)
+            .padding(.horizontal)
+
+            
             .navigationDestination(for: AuthRoute.self) { route in
                 switch route {
                 case .register:
