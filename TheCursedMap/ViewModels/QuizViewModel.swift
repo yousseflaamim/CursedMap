@@ -14,6 +14,8 @@ final class QuizViewModel: ObservableObject {
     @Published var lastAnswerWasCorrect: Bool?
     @Published var showWrongAnswerView: Bool = false
     
+    @Published var showTreasureRewardView: Bool = false
+    
     @Published var treasureVM: TreasureViewModel? = nil // to update levelprogress in firestore
     
 
@@ -43,22 +45,13 @@ final class QuizViewModel: ObservableObject {
 
         let isCorrect = (optionIndex == question.correctAnswerIndex)
         lastAnswerWasCorrect = isCorrect
+        showExplanation = true
+        
         if isCorrect {
             treasureVM?.openChest() // opens chest in treasureViewModel to save to firestore
+            self.showTreasureRewardView = true
         } else {
             showWrongAnswerView = true
         }
-        showExplanation = true
-
-        // Gå till nästa fråga efter en kort fördröjning
-        //DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-         //   self.currentQuestionIndex += 1
-          //  self.presentNextQuestion()
-        }
-  //  }
-
-  //  func resetQuiz() {
-   //     startNewQuiz()
-   // }
-
+    }
 }

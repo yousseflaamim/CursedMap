@@ -15,6 +15,8 @@ struct WrongAnswerView: View {
     @State private var player: AVAudioPlayer?
     @State private var videoPlayer = AVPlayer()
     
+    let dismissAction: () -> Void
+    
     private let scaryClips: [(video: String, sound: String)] = [
         (video: "creepy-doll", sound: "doll-laugh"),
         (video: "creep", sound: "creep-sound"),
@@ -84,5 +86,5 @@ struct WrongAnswerView: View {
 
 
 #Preview {
-    WrongAnswerView()
+    WrongAnswerView(dismissAction: {})
 }
