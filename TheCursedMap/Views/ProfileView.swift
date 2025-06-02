@@ -165,7 +165,7 @@ struct ProfileView: View {
                 .scrollContentBackground(.hidden)
             }
         }.sheet(isPresented: $showEditSheet) {
-            EditProfileView()
+            EditProfileView(profileViewModel: profileViewModel)
         }
         .sheet(isPresented: $showSoundSettings) {
             SoundSettingsView()
