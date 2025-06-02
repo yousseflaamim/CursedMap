@@ -110,12 +110,11 @@ struct GameView: View {
         }
         
         // Presentera QuizView modalt när en kista hittas
-        .sheet(isPresented: $showingQuiz) {
-            if let question = quizQuestionForCurrentChest {
-                QuizView(question: question, treasureVM: treasureVM)
+        .overlay {
+            if showingQuiz, let question = quizQuestionForCurrentChest {
+                QuizView(question: question, treasureVM: treasureVM, dismissAction: { showingQuiz = false})
                     .environmentObject(treasureVM)
-            } else {
-                Text("Kunde inte ladda quizfråga.")
+                    .zIndex(1)
             }
         }
     }
