@@ -25,6 +25,8 @@ struct LoginView: View {
                 ]), startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
                 
+                LoadingView(isVisible: $viewModel.isLoading)
+                
                 VStack {
                     // Logo
                     Image("CursedMapLogo")
@@ -57,7 +59,7 @@ struct LoginView: View {
                             }) {
                                 Text("Forgot Password?")
                                     .font(.footnote)
-                                    .foregroundColor(.white)
+                                    .foregroundColor(.black)
                                     .bold()
                                     .padding(.bottom, 10)
                             }
@@ -66,16 +68,19 @@ struct LoginView: View {
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
                             SoundManager.shared.playSound(named: "click-click")
-                            HUDManager.showLoading("Is logging in...")
-
+                            // HUDManager.showLoading("Is logging in...")
+                          
                             viewModel.login { success in
-                                if success {
-                                    HUDManager.showSuccess("Welcome!")
+                           
+                                    if success {
+                                        HUDManager.showSuccess("Welcome")
                                         onLoginSuccess()
-                                } else {
-                                    HUDManager.showError("Login failed")
+                                    } else {
+                                        HUDManager.showError("Login failed")
+                                    }
                                 }
-                            }
+                            
+                                
                         }
                         .disabled(viewModel.isLoading)
                         .frame(width: 180)
@@ -129,7 +134,6 @@ enum AuthRoute: Hashable {
     case register
     case resetPassword
 }
-
 
 #Preview {
     LoginView(onLoginSuccess: {})
