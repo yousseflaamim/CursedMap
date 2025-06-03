@@ -42,6 +42,29 @@ struct TreasureRewardView: View {
                     .foregroundColor(.yellow)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                
+                if let name = treasureVM.lastUnlockedCollectibleName { // to show collectble when levelup
+                    Text("Level up! ✨ ")
+                        .font(.system(size: 24, weight: .medium, design: .serif))
+                        .foregroundColor(.yellow)
+                        .padding(.top, 20)
+                    Text("Du fick: \(name) till din collection!")
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+                        .foregroundColor(.yellow)
+                        .padding(.top, 10)
+                }
+                
+                if let leveledItem = treasureVM.lastLeveledUpCollectible { // to show collectebles levelUp if it leveled up
+                    Text("\(leveledItem.name) har nått level \(leveledItem.level)!")
+                        .font(.system(size: 20, weight: .bold, design: .serif))
+                        .foregroundColor(.white)
+                        .padding(.top, 12)
+
+                    Text("För att nå nästa nivå: \(leveledItem.requiredCount) st!")
+                        .font(.system(size: 16, weight: .medium, design: .serif))
+                        .foregroundColor(.yellow)
+                        .padding(.top, 4)
+                }
             }
         }
         .onAppear {
@@ -49,6 +72,8 @@ struct TreasureRewardView: View {
             
             // Stäng popupen automatiskt efter en kort stund (t.ex. 5 sekunder)
             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                treasureVM.levelUpReward = 0
+                treasureVM.lastUnlockedCollectibleName = nil
                 dismissAction()
             }
         }

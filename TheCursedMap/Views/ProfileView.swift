@@ -22,7 +22,7 @@ struct ProfileView: View {
     var body: some View {
         // in use of progressView for xp
         let maxXpPerLevel = 150
-        let progress = min(Double(treasureViewModel.coins % maxXpPerLevel) / Double(maxXpPerLevel), 1.0)
+        let progress = min(Double(treasureViewModel.xp % maxXpPerLevel) / Double(maxXpPerLevel), 1.0)
         
         ZStack {
             // Bakground
@@ -148,6 +148,7 @@ struct ProfileView: View {
                 
                 List{
                     HStack{
+                        
                         // logik för att eventuellt visa något i en lista. eller något annat, nedan bara ett exempel.
                         Text("Eventuella kommande avatarer här")
                             .font(.system(size: 16, weight: .medium, design: .serif))
