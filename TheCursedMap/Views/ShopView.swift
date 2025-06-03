@@ -31,7 +31,7 @@ struct ShopView: View {
                 HStack {
                     Spacer()
                     HStack(spacing: 6) {
-                        Image("coin1")
+                        Image("coinpile")
                             .resizable()
                             .frame(width: 24, height: 24)
                         Text("\(viewModel.coinBalance)")
@@ -82,7 +82,7 @@ struct ShopView: View {
 
                                         if !viewModel.isUnlocked(avatar.imageName) {
                                             HStack(spacing: 6) {
-                                                Image("coin1")
+                                                Image("coinpile")
                                                     .resizable()
                                                     .frame(width: 20, height: 20)
                                                 Text("\(avatar.price)")
