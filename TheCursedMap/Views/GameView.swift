@@ -33,6 +33,8 @@ enum MapItem: Identifiable {
 struct GameView: View {
     @StateObject private var locationManager = LocationManager()
     @StateObject private var treasureVM = TreasureViewModel()
+    @StateObject private var avatarManager = AvatarManager()
+
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -59,7 +61,7 @@ struct GameView: View {
                             .animation(.spring(), value: chest.isFound)
 
                     case .user:
-                        Image("1avatar1")
+                        Image(avatarManager.selectedAvatar)
                             .resizable()
                             .frame(width: 40, height: 40)
                             .clipShape(Circle())
