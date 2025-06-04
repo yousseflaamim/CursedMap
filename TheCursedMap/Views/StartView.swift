@@ -34,7 +34,7 @@ struct StartView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                             path.append(AppRoute.shop)
                         }) {
                             ZStack {

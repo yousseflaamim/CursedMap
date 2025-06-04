@@ -44,6 +44,7 @@ struct QuizView: View {
                             
                             ForEach(question.options.indices, id: \.self) { index in
                                 Button {
+                                    SoundManager.shared.playButtonSound(named: "click-click")
                                     viewModel.submitAnswer(optionIndex: index)
                                 } label: {
                                     Text(question.options[index])

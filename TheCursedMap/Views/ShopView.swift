@@ -97,6 +97,7 @@ struct ShopView: View {
                                         if viewModel.isUnlocked(avatar.imageName) {
                                             viewModel.selectedAvatar = avatar.imageName
                                             viewModel.saveUserData()
+                                            SoundManager.shared.playButtonSound(named: "weird-hi")
                                             animateSelected = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                 animateSelected = false
