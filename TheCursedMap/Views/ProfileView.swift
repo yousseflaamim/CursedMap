@@ -109,6 +109,7 @@ struct ProfileView: View {
                     .padding(.horizontal,20)
                     Button(action: {
                         showAlertDelete = true
+                        SoundManager.shared.playEffectSound(named: "scream")
                     }) {
                             Image(systemName: "trash")
                                 .resizable()
@@ -136,9 +137,12 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal,60)
                     Button(action: {
-                        
-                        profileViewModel.signOut()
-                        
+                        SoundManager.shared.playEffectSound(named: "get-out")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                       
+                            profileViewModel.signOut()
+                        }
+              
                     }) {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .resizable()
@@ -166,6 +170,7 @@ struct ProfileView: View {
                                         .clipShape(Circle())
                                         .overlay(Circle().stroke(Color.black, lineWidth: 4))
                                     Button("Välj"){
+                                        SoundManager.shared.playButtonSound(named: "click-click")
                                         viewModel.selectedAvatar = avatarName
                                         viewModel.saveUserData()
                                     }

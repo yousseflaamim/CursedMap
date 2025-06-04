@@ -11,6 +11,7 @@ import ProgressHUD
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var path = NavigationPath()
+    @State private var showVideo = false
     
     var onLoginSuccess: () -> Void
     
@@ -67,13 +68,14 @@ struct LoginView: View {
 
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                             // HUDManager.showLoading("Is logging in...")
                           
                             viewModel.login { success in
                            
                                     if success {
                                         HUDManager.showSuccess("Welcome")
+                                        showVideo = true
                                         onLoginSuccess()
                                     } else {
                                         HUDManager.showError("Login failed")
@@ -107,7 +109,7 @@ struct LoginView: View {
                     VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                         }
                     }
                     .padding()
@@ -124,10 +126,14 @@ struct LoginView: View {
                     ResetPasswordView(authService: FirebaseAuthService())
                 }
             }
+            
 
-        }
+        }.fullScreenCover(isPresented: $showVideo) {
+            WelcomeView(show: $showVideo)}
         .tint(.black)
+        
     }
+       
 }
 
 enum AuthRoute: Hashable {

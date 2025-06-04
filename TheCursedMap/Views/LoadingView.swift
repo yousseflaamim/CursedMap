@@ -14,11 +14,9 @@ struct LoadingView: View {
         var body: some View {
             if isVisible {
                 ZStack {
-                   // Color.black.opacity(0.7).ignoresSafeArea()
-                   
                     VStack(spacing: 16) {
                         
-                        Image("pirate")
+                        Image("creepySpider")
                             .resizable()
                             .frame(width: 120, height: 120)
                             .rotationEffect(.degrees(rotation))
@@ -34,10 +32,7 @@ struct LoadingView: View {
                     }
                    
                 }
-               /* .onAppear {
-                               SoundManager.shared.playEffectSound(named: "boo")
-                           }*/
-                          
+              
             }
             
         }

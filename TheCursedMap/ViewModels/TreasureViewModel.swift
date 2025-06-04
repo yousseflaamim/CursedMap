@@ -81,13 +81,13 @@ class TreasureViewModel: ObservableObject {
     
     func defaultCollectibles()  -> [Collectible]{
         return [
-            Collectible(id: "compass", name: "Kompass", imageName: "collect1", currentCount: 0, requiredCount: 10, reward: 100, level: 0),
-            Collectible(id: "hourglass", name: "Timglas", imageName: "collect2", currentCount: 0, requiredCount: 10, reward: 50, level: 0),
-            Collectible(id: "papgegoja", name: "Papegoja", imageName: "collect3", currentCount: 0, requiredCount: 10, reward: 150, level: 0),
-            Collectible(id: "map", name: "Skattkarta", imageName: "collect4", currentCount: 0, requiredCount: 15, reward: 200, level: 0),
-            Collectible(id: "deadPirate", name: "Piraten", imageName: "collect5", currentCount: 0, requiredCount: 10, reward: 100, level: 0),
-            Collectible(id: "boat", name: "Piratens båt", imageName: "collect6", currentCount: 0, requiredCount: 10, reward: 120, level: 0),
-            Collectible(id: "flag", name: "Piratens flagga", imageName: "collect7", currentCount: 0, requiredCount: 10, reward: 125, level: 0)
+            Collectible(id: "doll", name: "Dockan", imageName: "collect1", currentCount: 0, requiredCount: 10, reward: 100, level: 0),
+            Collectible(id: "deadMan", name: "Dödskallen", imageName: "collect2", currentCount: 0, requiredCount: 10, reward: 50, level: 0),
+            Collectible(id: "zombie", name: "Zombien", imageName: "collect3", currentCount: 0, requiredCount: 10, reward: 150, level: 0),
+            Collectible(id: "scarecrow", name: "Fågelskrämman", imageName: "collect4", currentCount: 0, requiredCount: 15, reward: 200, level: 0),
+            Collectible(id: "hand", name: "Blodiga handen", imageName: "collect5", currentCount: 0, requiredCount: 10, reward: 100, level: 0),
+            Collectible(id: "demon", name: "Demonen", imageName: "collect6", currentCount: 0, requiredCount: 10, reward: 120, level: 0),
+            Collectible(id: "vampire", name: "Vampyren", imageName: "collect7", currentCount: 0, requiredCount: 10, reward: 125, level: 0)
         ]
        
     }
