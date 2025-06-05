@@ -97,7 +97,7 @@ struct ShopView: View {
                                         if viewModel.isUnlocked(avatar.imageName) {
                                             viewModel.selectedAvatar = avatar.imageName
                                             viewModel.saveUserData()
-                                            SoundManager.shared.playButtonSound(named: "weird-hi")
+                                            SoundManager.shared.playButtonSound(named: "hello")
                                             animateSelected = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                                 animateSelected = false
@@ -109,6 +109,7 @@ struct ShopView: View {
                                             } else {
                                                 avatarToPurchase = avatar
                                                 showPurchasePopup = true
+                                                SoundManager.shared.playButtonSound(named: "hello")
                                             }
                                         }
                                     }
@@ -138,6 +139,7 @@ struct ShopView: View {
                 PurchasePopup(
                     avatar: avatar,
                     onConfirm: {
+                        SoundManager.shared.playButtonSound(named: "cash-pay")
                         viewModel.purchase(avatar)
                         showPurchasePopup = false
                     },

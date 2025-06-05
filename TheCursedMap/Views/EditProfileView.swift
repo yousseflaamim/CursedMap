@@ -11,6 +11,7 @@ struct EditProfileView: View {
     
     @Environment(\.dismiss) var dismiss
     @ObservedObject var profileViewModel: ProfileViewModel
+    @StateObject private var viewModel = ShopViewModel()
     @State private var newUsername: String
 
     init(profileViewModel: ProfileViewModel) {
@@ -26,7 +27,10 @@ struct EditProfileView: View {
                 .ignoresSafeArea()
             
             VStack {
-                Image("profile-image")
+                Image(viewModel.selectedAvatar.isEmpty ? "1avatar1" : viewModel.selectedAvatar)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 180, height: 180)
                     .padding(.bottom, 20)
                 
                 Text(profileViewModel.name)
