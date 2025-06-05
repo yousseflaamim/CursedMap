@@ -18,7 +18,10 @@ class TreasureViewModel: ObservableObject {
         var openedTreasure: Int
         var collectibles: [Collectible]
     }
-    
+    @Published var hauntingTimeRemaining: Int = 0
+
+    private var hauntTimer: Timer?
+    private var hauntCountdownTimer: Timer?
     @Published var openedTreasure: Int = 0
     @Published var coins: Int = 0
     @Published var level: Int = 0
@@ -28,6 +31,9 @@ class TreasureViewModel: ObservableObject {
     @Published var collectibles: [Collectible] = []
     @Published var lastUnlockedCollectibleName: String? = nil  // to print in TreasureRewardView
     @Published var lastLeveledUpCollectible: Collectible? = nil // to print in TreasureRewardView
+    @Published var isHaunted: Bool = false
+    @Published var shouldPlayHauntedSound: Bool = false
+    @Published var hauntingMessage: String? = nil
     
     init(){
         loadProgressFromFirestore()
@@ -42,12 +48,67 @@ class TreasureViewModel: ObservableObject {
        }
     
        func openChest() {
+           if isHaunted {
+                  print("Du var haunted! Förlorade eventuell belöning.")
+                  isHaunted = false
+                  shouldPlayHauntedSound = false
+               hauntTimer?.invalidate()
+               hauntCountdownTimer?.invalidate()
+               hauntTimer = nil
+               hauntCountdownTimer = nil
+               hauntingTimeRemaining = 0
+               hauntingMessage = "Du är inte längre haunted!"
+                  saveProgressToFirestore()
+                  return
+              }
+      
            openedTreasure += 1
            randomXp()
            randomCoins()
            updateLevel()
+           applyHauntingChance()
            saveProgressToFirestore()
        }
+    
+    func applyHauntingChance() {
+        let chance = Int.random(in: 1...100)
+        if chance <= 20 {  // 20% chance to be Haunted
+            isHaunted = true
+            shouldPlayHauntedSound = true
+            hauntingTimeRemaining = 120
+         
+            print("You are haunted! Nästa kista blir läskig...")
+            
+            hauntTimer?.invalidate()
+            hauntCountdownTimer?.invalidate()
+   
+            hauntTimer = Timer.scheduledTimer(withTimeInterval: 120.0, repeats: false) { [weak self] _ in
+                guard let self = self, self.isHaunted else { return }
+                self.applyHauntingPenalty()
+            }
+            hauntCountdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                guard let self = self else { return }
+                if self.hauntingTimeRemaining > 0 {
+                    self.hauntingTimeRemaining -= 1
+                } else {
+                    self.hauntCountdownTimer?.invalidate()
+                    
+                }
+            }
+        }
+    }
+    func applyHauntingPenalty() {
+        print("Du öppnade ingen kista i tid!")
+
+        let lostCoins = Int(Double(coins) * 0.2)
+        coins = max(coins - lostCoins, 0)
+        isHaunted = false
+        shouldPlayHauntedSound = false
+        hauntingMessage = "Du öppnade ingen kista i tid och förlorade \(lostCoins) mynt!"
+        print("Förlorade \(lostCoins) coins pga haunting.")
+
+        saveProgressToFirestore()
+    }
     
     func randomCoins(){
         let reward = Int.random(in: 5...20)
