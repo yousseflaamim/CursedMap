@@ -20,11 +20,11 @@ struct CustomButton: View {
                 if let iconImage = iconImage {
                     iconImage
                         .resizable()
-                        .frame(width: 20, height: 20)
+                        .frame(width: 25, height: 25)
                 } else if let iconName = iconName {
                     Image(systemName: iconName)
                         .resizable()
-                        .frame(width: 20, height: 20)
+                        .frame(width: 25, height: 25)
                 }
                 
                 Text(label)
