@@ -42,7 +42,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D7500EB92DF02B960069BB61 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */ = {
+		D7F5DAB92DDE60660095E167 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -55,7 +55,7 @@
 		805AE36A2DD46FB700B7A19E /* TheCursedMap */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D7500EB92DF02B960069BB61 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */,
+				D7F5DAB92DDE60660095E167 /* Exceptions for "TheCursedMap" folder in "TheCursedMap" target */,
 			);
 			path = TheCursedMap;
 			sourceTree = "<group>";
@@ -446,9 +446,6 @@
 				DEVELOPMENT_TEAM = 7SR766J6G5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TheCursedMap/Info.plist;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "För att hitta skatter och få notiser även när appen är i bakgrunden";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "För att kunna notifiera dig om närliggande skatter även när appen är stängd, behöver vi tillgång till din plats i bakgrunden.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -479,9 +476,6 @@
 				DEVELOPMENT_TEAM = 7SR766J6G5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = TheCursedMap/Info.plist;
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "För att hitta skatter och få notiser även när appen är i bakgrunden";
-				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "För att kunna notifiera dig om närliggande skatter även när appen är stängd, behöver vi tillgång till din plats i bakgrunden.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
