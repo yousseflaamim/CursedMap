@@ -1,12 +1,14 @@
 //
-//  ContentView.swift
+//  LoginView.swift
 //  TheCursedMap
 //
 //  Created by Alexander Malmqvist on 2025-05-14.
-// hej
+//
 
 import SwiftUI
 import ProgressHUD
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
@@ -36,12 +38,11 @@ struct LoginView: View {
                         .padding(.top, -55)
                         .padding(.bottom, -25)
                     
-                    // Title
+                    // Title and fields
                     VStack {
                         Text("Login")
                             .font(.largeTitle)
                         
-                        // Error message
                         if !viewModel.errorMessage.isEmpty {
                             Text(viewModel.errorMessage)
                                 .foregroundColor(.red)
@@ -49,7 +50,6 @@ struct LoginView: View {
                         }
                         
                         CustomTextField(text: $viewModel.email, placeHolder: "Email", image: "envelope")
-                        
                         CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
                             .padding(.bottom)
                         
@@ -65,9 +65,17 @@ struct LoginView: View {
                                     .padding(.bottom, 10)
                             }
                         }
-
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+
+                            SoundManager.shared.playSound(named: "click-click")
+                            viewModel.login { success in
+                                if success {
+                                    HUDManager.showSuccess("Welcome")
+                                    onLoginSuccess()
+                                } else {
+                                    HUDManager.showError("Login failed")
+
                             SoundManager.shared.playButtonSound(named: "click-click")
                             // HUDManager.showLoading("Is logging in...")
                           
@@ -80,39 +88,56 @@ struct LoginView: View {
                                     } else {
                                         HUDManager.showError("Login failed")
                                     }
+
                                 }
-                            
-                                
+                            }
                         }
                         .disabled(viewModel.isLoading)
                         .frame(width: 180)
                     }
                     .padding(20)
                     
+                    // Divider
                     HStack {
-                        VStack {
-                            Divider()
-                                .frame(height: 1)
-                                .background(Color.black)
-                        }
-                                            
-                        Text("Or")
-                            .padding(.horizontal, 8)
-                                            
-                        VStack {
-                            Divider()
-                                .frame(height: 1)
-                                .background(Color.black)
-                        }
+                        Divider().frame(height: 1).background(Color.black)
+                        Text("Or").padding(.horizontal, 8)
+                        Divider().frame(height: 1).background(Color.black)
                     }
                     
+
+                    // Email sign up
+                    CustomButton(label: "Sign up with Email", iconName: "envelope") {
+                        SoundManager.shared.playSound(named: "click-click")
+                        path.append(AuthRoute.register)
+                    }
+                    
+                    // Google Sign In button
+                    CustomButton(label: "Continue with Google", iconImage: Image("google_logo")) {
+                        SoundManager.shared.playSound(named: "click-click")
+                        guard let rootVC = UIApplication.shared.connectedScenes
+                            .compactMap({ $0 as? UIWindowScene })
+                            .first?.windows
+                            .first?.rootViewController else {
+                                HUDManager.showError("Unable to access root view controller.")
+                                return
+                            }
+                        
+                        viewModel.loginWithGoogle(presenting: rootVC) { success in
+                            if success {
+                                HUDManager.showSuccess("Welcome with Google")
+                                onLoginSuccess()
+                            } else {
+                                HUDManager.showError("Google login failed")
+                            }
+
                     VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
                             SoundManager.shared.playButtonSound(named: "click-click")
+
                         }
                     }
-                    .padding()
+
                 }
                 .padding()
             }
@@ -126,10 +151,13 @@ struct LoginView: View {
                     ResetPasswordView(authService: FirebaseAuthService())
                 }
             }
+
+        }
             
 
         }.fullScreenCover(isPresented: $showVideo) {
             WelcomeView(show: $showVideo)}
+
         .tint(.black)
         
     }

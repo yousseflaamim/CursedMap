@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseCore
+import GoogleSignIn
 import UserNotifications
 import CoreLocation
 
@@ -48,6 +49,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         return true
     }
+    //fun login with google
+    
+    func application(_ app: UIApplication, open url: URL,
+                     options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
+    }
+   
     
     // MARK: - UNUserNotificationCenterDelegate Methods
 
@@ -67,4 +75,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         completionHandler()
     }
+
 }
+
