@@ -56,4 +56,22 @@ class LoginViewModel: ObservableObject {
         }
         return true
     }
+    
+    //restpassword
+    func resetPassword(completion: @escaping (Bool, String?) -> Void) {
+        guard !email.isEmpty else {
+            completion(false, "Please enter your email")
+            return
+        }
+        authService.resetPassword(email: email) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    completion(true, nil)
+                case .failure(let error):
+                    completion(false, error.localizedDescription)
+                }
+            }
+        }
+    }
 }

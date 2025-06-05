@@ -11,17 +11,19 @@ struct ProfileView: View {
     
     @State var showAlertDelete = false
     @State var showEditSheet = false
+    @State var showSoundSettings = false
     @State private var deleteErrorMessage: String? = nil
     @StateObject var profileViewModel = ProfileViewModel()
     @StateObject var treasureViewModel = TreasureViewModel()
+    @StateObject private var viewModel = ShopViewModel()
     @StateObject private var soundManager = SoundManager.shared
     
     
   
     var body: some View {
-        // in use of progressView
-        let maxCoinsPerLevel = 100
-        let progress = min(Double(treasureViewModel.coins % maxCoinsPerLevel) / Double(maxCoinsPerLevel), 1.0)
+        // in use of progressView for xp
+        let maxXpPerLevel = 150
+        let progress = min(Double(treasureViewModel.xp % maxXpPerLevel) / Double(maxXpPerLevel), 1.0)
         
         ZStack {
             // Bakground
@@ -34,19 +36,24 @@ struct ProfileView: View {
             
             VStack {
                 HStack{
-                    Image("open-chest2") // en mindre öppnad kista
-                        .padding()
-                    Text("10") // få in antal öppnade kistor här senare från treasureViewModel
+                    Image("openChest1") // en mindre öppnad kista än den andra som blev förstor
+                    Text("\(treasureViewModel.openedTreasure)")
+                        .font(.system(size: 22, weight: .medium, design: .serif))
                         .foregroundColor(.gray)
-                        .padding()
+                      
                     Spacer()
-                        Image("coin1")
-                    Text("100")  // få in antal coins användaren har här senare från treasureViewModel
+                        Image("coinpile")
+                    Text("\(treasureViewModel.coins)")
                         .foregroundColor(.gray)
-                        .padding(20)
+                        .font(.system(size: 22, weight: .medium, design: .serif))
+              
                 }
+                .padding(.horizontal)
                 HStack{
-                    Image("profile-image")
+                    Image(viewModel.selectedAvatar.isEmpty ? "1avatar1" : viewModel.selectedAvatar)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 180, height: 180)
                         .padding()
                     VStack{
                         Text(profileViewModel.name)
@@ -62,9 +69,15 @@ struct ProfileView: View {
                 
                 // ProgressView for Level up
                 VStack(alignment: .leading) {
-                    Text("Level \(treasureViewModel.level)")
-                        .foregroundColor(.yellow)
-                        .font(.system(size: 18, weight: .medium, design: .serif))
+                    HStack{
+                        Text("Level: \(treasureViewModel.level)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                        Spacer()
+                        Text("XP: \(treasureViewModel.xp)")
+                            .foregroundColor(.yellow)
+                            .font(.system(size: 18, weight: .medium, design: .serif))
+                    }
 
                     ProgressView(value: progress)
                         .progressViewStyle(LinearProgressViewStyle())
@@ -74,9 +87,9 @@ struct ProfileView: View {
                 .padding([.leading, .trailing, .bottom])
                 HStack{
                     Button(action: {
-                        soundManager.toggleSound()
+                        showSoundSettings = true
                     }) {
-                        Image(systemName: soundManager.isSoundEnabled ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                        Image(systemName: "megaphone")
                             .resizable()
                             .frame(width: 25, height: 25)
                             .foregroundColor(.gray)
@@ -96,6 +109,7 @@ struct ProfileView: View {
                     .padding(.horizontal,20)
                     Button(action: {
                         showAlertDelete = true
+                        SoundManager.shared.playEffectSound(named: "scream")
                     }) {
                             Image(systemName: "trash")
                                 .resizable()
@@ -123,41 +137,63 @@ struct ProfileView: View {
                     }
                     .padding(.horizontal,60)
                     Button(action: {
-                        
-                        profileViewModel.signOut()
-                        
+                        SoundManager.shared.playEffectSound(named: "get-out")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                       
+                            profileViewModel.signOut()
+                        }
+              
                     }) {
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 30, height: 30)
                                 .foregroundColor(.gray)
-                        
+                               
                     }
                     .padding(.horizontal,20)
                 }
                 
-                List{
-                    HStack{
-                        // logik för att eventuellt visa något i en lista. eller något annat, nedan bara ett exempel.
-                        Text("Eventuella kommande avatarer här")
-                            .font(.system(size: 16, weight: .medium, design: .serif))
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 16) {
+                        Text("Köpta Avatarer!")
+                            .font(.system(size: 24, weight: .medium, design: .serif))
+                            .foregroundColor(Color.yellow)
+                            .padding(.bottom)
+                        ForEach(viewModel.unlockedAvatars, id: \.self) { avatarName in
+                            HStack{
+                                VStack{
+                                    Image(avatarName)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 100, height: 100)
+                                        .clipShape(Circle())
+                                        .overlay(Circle().stroke(Color.black, lineWidth: 4))
+                                    Button("Välj"){
+                                        SoundManager.shared.playButtonSound(named: "click-click")
+                                        viewModel.selectedAvatar = avatarName
+                                        viewModel.saveUserData()
+                                    }
+                                    .font(.system(size: 16, weight: .bold, design: .serif))
+                                    .foregroundColor(Color.gray)
+                                    
+                                }
+                                .padding(.bottom)
+                            }
+                        }
                     }
-                    .listRowBackground(Color.gray)
-                    .padding()
+                    .padding(.horizontal)
                     
                 }
                 .padding()
-                .background(
-                    LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"),Color("Gray"), Color("GrayBlack")]),
-                                   startPoint: .top,
-                                   endPoint: .bottom)
-                )
+                
                 .scrollContentBackground(.hidden)
             }
         }.sheet(isPresented: $showEditSheet) {
-            EditProfileView()
-               
+            EditProfileView(profileViewModel: profileViewModel)
+        }
+        .sheet(isPresented: $showSoundSettings) {
+            SoundSettingsView()
         }
     }
 }

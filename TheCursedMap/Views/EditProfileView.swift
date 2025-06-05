@@ -10,39 +10,51 @@ import SwiftUI
 struct EditProfileView: View {
     
     @Environment(\.dismiss) var dismiss
-    @StateObject var profileViewModel = ProfileViewModel()
-    @State private var newUsername: String = ""
+    @ObservedObject var profileViewModel: ProfileViewModel
+    @StateObject private var viewModel = ShopViewModel()
+    @State private var newUsername: String
+
+    init(profileViewModel: ProfileViewModel) {
+        self.profileViewModel = profileViewModel
+        _newUsername = State(initialValue: profileViewModel.name)
+    }
     
     var body: some View {
-        ZStack{
-            LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"),
-                                                       Color("Gray"),
-                                                       Color("GrayBlack")]),
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray"), Color("GrayBlack")]),
                            startPoint: .top,
                            endPoint: .bottom)
-            .ignoresSafeArea()
+                .ignoresSafeArea()
             
-            VStack{
-                // logik för att eventuellt ändra profilbild.
-                Image("profile-image")
+            VStack {
+                Image(viewModel.selectedAvatar.isEmpty ? "1avatar1" : viewModel.selectedAvatar)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 180, height: 180)
                     .padding(.bottom, 20)
+                
                 Text(profileViewModel.name)
                     .font(.system(size: 24, weight: .medium, design: .serif))
                     .foregroundColor(.black)
                     .padding(.bottom, 50)
                 
-                // ändra till coustom textfield
                 TextField("Nytt namn", text: $newUsername)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .padding(.bottom, 50)
                 
                 Button("Spara") {
-                                // logik att spara till Firebase här
-                                SoundManager.shared.playSound(named: "click-click")
-                                dismiss()
-                    
-                            }
+                    profileViewModel.newDisplayName = newUsername
+                    profileViewModel.updateDisplayName { result in
+                        switch result {
+                        case .success:
+                            SoundManager.shared.playButtonSound(named: "click-click")
+                            dismiss()
+                        case .failure(let error):
+                            print("Fel vid uppdatering: \(error.localizedDescription)")
+                        }
+                    }
+                }
                 .font(.system(size: 24, weight: .medium, design: .serif))
                 .frame(width: 280, height: 60)
                 .background(
@@ -50,7 +62,7 @@ struct EditProfileView: View {
                                    startPoint: .top,
                                    endPoint: .bottom)
                 )
-                .foregroundColor(.black)
+                .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
                 .cornerRadius(30)
                 .overlay(
                     RoundedRectangle(cornerRadius: 30)
@@ -58,29 +70,29 @@ struct EditProfileView: View {
                 )
                 .padding(.bottom)
                 
-                            Button("Avbryt") {
-                                SoundManager.shared.playSound(named: "click-click")
-                                dismiss()
-                            }
-                            .font(.system(size: 24, weight: .medium, design: .serif))
-                            .frame(width: 280, height: 60)
-                            .background(
-                                LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
-                                               startPoint: .top,
-                                               endPoint: .bottom)
-                            )
-                            .foregroundColor(.black)
-                            .cornerRadius(30)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 30)
-                                    .stroke(Color.black, lineWidth: 1)
-                            )
-                            .padding(.bottom)
+                Button("Avbryt") {
+                    SoundManager.shared.playButtonSound(named: "click-click")
+                    dismiss()
+                }
+                .font(.system(size: 24, weight: .medium, design: .serif))
+                .frame(width: 280, height: 60)
+                .background(
+                    LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                   startPoint: .top,
+                                   endPoint: .bottom)
+                )
+                .foregroundColor(Color(red: 0.6, green: 0.0, blue: 0.0))
+                .cornerRadius(30)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .stroke(Color.black, lineWidth: 1)
+                )
+                .padding(.bottom)
             }
         }
     }
 }
 
 #Preview {
-    EditProfileView()
+    EditProfileView(profileViewModel: ProfileViewModel())
 }

@@ -11,6 +11,7 @@ import ProgressHUD
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var path = NavigationPath()
+    @State private var showVideo = false
     
     var onLoginSuccess: () -> Void
     
@@ -24,6 +25,8 @@ struct LoginView: View {
                     Color("GrayBlack")
                 ]), startPoint: .top, endPoint: .bottom)
                     .ignoresSafeArea()
+                
+                LoadingView(isVisible: $viewModel.isLoading)
                 
                 VStack {
                     // Logo
@@ -50,18 +53,36 @@ struct LoginView: View {
                         CustomTextField(text: $viewModel.password, placeHolder: "Password", image: "lock", isSecure: true)
                             .padding(.bottom)
                         
-                        CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
-                            SoundManager.shared.playSound(named: "click-click")
-                            HUDManager.showLoading("Is logging in...")
-
-                            viewModel.login { success in
-                                if success {
-                                    HUDManager.showSuccess("Welcome!")
-                                        onLoginSuccess()
-                                } else {
-                                    HUDManager.showError("Login failed")
-                                }
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                path.append(AuthRoute.resetPassword)
+                            }) {
+                                Text("Forgot Password?")
+                                    .font(.footnote)
+                                    .foregroundColor(.black)
+                                    .bold()
+                                    .padding(.bottom, 10)
                             }
+                        }
+
+                        
+                        CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+                            SoundManager.shared.playButtonSound(named: "click-click")
+                            // HUDManager.showLoading("Is logging in...")
+                          
+                            viewModel.login { success in
+                           
+                                    if success {
+                                        HUDManager.showSuccess("Welcome")
+                                        showVideo = true
+                                        onLoginSuccess()
+                                    } else {
+                                        HUDManager.showError("Login failed")
+                                    }
+                                }
+                            
+                                
                         }
                         .disabled(viewModel.isLoading)
                         .frame(width: 180)
@@ -88,7 +109,7 @@ struct LoginView: View {
                     VStack {
                         CustomButton(label: "Sign up with Email", iconName: "envelope") {
                             path.append(AuthRoute.register)
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                         }
                     }
                     .padding()
@@ -101,15 +122,23 @@ struct LoginView: View {
                     RegisterView {
                         onLoginSuccess()
                     }
+                case .resetPassword:
+                    ResetPasswordView(authService: FirebaseAuthService())
                 }
             }
-        }
+            
+
+        }.fullScreenCover(isPresented: $showVideo) {
+            WelcomeView(show: $showVideo)}
         .tint(.black)
+        
     }
+       
 }
 
 enum AuthRoute: Hashable {
     case register
+    case resetPassword
 }
 
 #Preview {
