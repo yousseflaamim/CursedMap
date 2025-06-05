@@ -12,6 +12,9 @@
 				<string>com.googleusercontent.apps.295573048763-1a3q6vfgienuchv39ph4i2ri0npnlfns</string>
 			</array>
 		</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
 	</array>
 </dict>
 </plist>

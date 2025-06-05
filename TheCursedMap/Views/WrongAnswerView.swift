@@ -23,7 +23,8 @@ struct WrongAnswerView: View {
         (video: "demon", sound: "demon-laugh"),
         (video: "ghost", sound: "ghost"),
         (video: "scary", sound: "ghost-scream"),
-        (video: "skeletons", sound: "scary-laugh")
+        (video: "skeletons", sound: "scary-laugh"),
+        (video: "creepy-girl", sound: "scream")
     ]
     private let gifNames = ["creeapy-doll", "creepy", "demon", "ghost", "scary", "skeletons"]
     

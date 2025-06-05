@@ -13,6 +13,7 @@ import GoogleSignInSwift
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var path = NavigationPath()
+    @State private var showVideo = false
     
     var onLoginSuccess: () -> Void
     
@@ -66,6 +67,7 @@ struct LoginView: View {
                         }
                         
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
+
                             SoundManager.shared.playSound(named: "click-click")
                             viewModel.login { success in
                                 if success {
@@ -73,6 +75,20 @@ struct LoginView: View {
                                     onLoginSuccess()
                                 } else {
                                     HUDManager.showError("Login failed")
+
+                            SoundManager.shared.playButtonSound(named: "click-click")
+                            // HUDManager.showLoading("Is logging in...")
+                          
+                            viewModel.login { success in
+                           
+                                    if success {
+                                        HUDManager.showSuccess("Welcome")
+                                        showVideo = true
+                                        onLoginSuccess()
+                                    } else {
+                                        HUDManager.showError("Login failed")
+                                    }
+
                                 }
                             }
                         }
@@ -88,6 +104,7 @@ struct LoginView: View {
                         Divider().frame(height: 1).background(Color.black)
                     }
                     
+
                     // Email sign up
                     CustomButton(label: "Sign up with Email", iconName: "envelope") {
                         SoundManager.shared.playSound(named: "click-click")
@@ -112,6 +129,12 @@ struct LoginView: View {
                             } else {
                                 HUDManager.showError("Google login failed")
                             }
+
+                    VStack {
+                        CustomButton(label: "Sign up with Email", iconName: "envelope") {
+                            path.append(AuthRoute.register)
+                            SoundManager.shared.playButtonSound(named: "click-click")
+
                         }
                     }
 
@@ -128,9 +151,17 @@ struct LoginView: View {
                     ResetPasswordView(authService: FirebaseAuthService())
                 }
             }
+
         }
+            
+
+        }.fullScreenCover(isPresented: $showVideo) {
+            WelcomeView(show: $showVideo)}
+
         .tint(.black)
+        
     }
+       
 }
 
 enum AuthRoute: Hashable {

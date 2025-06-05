@@ -8,7 +8,8 @@
 import SwiftUI
 import FirebaseCore
 import GoogleSignIn
-
+import UserNotifications
+import CoreLocation
 
 @main
 struct TheCursedMapApp: App {
@@ -29,10 +30,23 @@ struct TheCursedMapApp: App {
 }
 
 // Firebase App Delegate
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    private var locationManagerForNotifications: LocationManager?
+    
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         FirebaseApp.configure()
+        
+        
+        // Sätt delegeringen för User Notifications Center
+        UNUserNotificationCenter.current().delegate = self
+        
+        print("AppDelegate: didFinishLaunchingWithOptions - UNUserNotificationCenter delegate satt.")
+        
+        // Skapa en instans av LocationManager och schemalägg notisen direkt
+        locationManagerForNotifications = LocationManager()
+        locationManagerForNotifications?.scheduleDailyReminderNotification()
+        
         return true
     }
     //fun login with google
@@ -41,6 +55,26 @@ class AppDelegate: NSObject, UIApplicationDelegate {
                      options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         return GIDSignIn.sharedInstance.handle(url)
     }
+   
     
+    // MARK: - UNUserNotificationCenterDelegate Methods
+
+    // Denna metod anropas när en notis mottas MEDAN appen är i FÖRGRUNDEN.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("AppDelegate: Notis mottagen i förgrunden: \(notification.request.content.title)")
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    // Denna metod anropas när användaren interagerar med en notis (t.ex. klickar på den).
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        print("AppDelegate: Användare interagerade med notis: \(response.notification.request.content.title)")
+        
+        completionHandler()
+    }
+
 }
 

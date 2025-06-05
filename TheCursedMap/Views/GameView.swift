@@ -31,8 +31,12 @@ enum MapItem: Identifiable {
 }
 
 struct GameView: View {
+    let mapLevel: MapLevel 
+    
     @StateObject private var locationManager = LocationManager()
     @StateObject private var treasureVM = TreasureViewModel()
+    @StateObject private var avatarManager = AvatarManager()
+
     
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -44,6 +48,7 @@ struct GameView: View {
     
     @State private var showingQuiz: Bool = false
     @State private var quizQuestionForCurrentChest: QuizQuestion?
+
 
     var body: some View {
         ZStack {
@@ -59,7 +64,7 @@ struct GameView: View {
                             .animation(.spring(), value: chest.isFound)
 
                     case .user:
-                        Image("1avatar1")
+                        Image(avatarManager.selectedAvatar)
                             .resizable()
                             .frame(width: 40, height: 40)
                             .clipShape(Circle())
@@ -69,6 +74,33 @@ struct GameView: View {
                 }
             }
             .edgesIgnoringSafeArea(.all)
+
+            // Level indicator overlay
+            VStack {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Map Size: \(mapLevel.rawValue)")
+                            .font(.system(size: 16, weight: .bold, design: .serif))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(Color.black.opacity(0.7))
+                            .cornerRadius(10)
+                        
+                        Text("Chests: \(mapLevel.chestCount)")
+                            .font(.system(size: 14, weight: .medium, design: .serif))
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .background(Color.black.opacity(0.7))
+                            .cornerRadius(8)
+                    }
+                    Spacer()
+                }
+                .padding(.top, 50)
+                .padding(.leading, 20)
+                Spacer()
+            }
 
             if locationManager.userLocation == nil {
                 ProgressView("Laddar karta...")
@@ -81,8 +113,9 @@ struct GameView: View {
         .onReceive(locationManager.$userLocation) { location in
             guard let location = location else { return }
 
+           
             region.center = location
-
+            
             if !chestsGenerated {
                 generateChests(around: location)
                 chestsGenerated = true
@@ -131,10 +164,13 @@ struct GameView: View {
         // Hämta en kopia av de fördefinierade frågorna och blanda dem
         var availableQuestions = QuizViewModel.predefinedQuestions.shuffled()
         
+        // Use level-based chest count and spawn radius
+        let chestCount = mapLevel.chestCount
+        let spawnRadius = mapLevel.spawnRadius
 
-        chests = (0..<5).map { i in
-            let randomLat = location.latitude  + Double.random(in: -0.005...0.005)
-            let randomLon = location.longitude + Double.random(in: -0.005...0.005)
+        chests = (0..<chestCount).map { i in
+            let randomLat = location.latitude  + Double.random(in: -spawnRadius...spawnRadius)
+            let randomLon = location.longitude + Double.random(in: -spawnRadius...spawnRadius)
             
             let questionToAssign = availableQuestions.popLast() // Ta bort sista frågan från listan
 
@@ -143,6 +179,6 @@ struct GameView: View {
                          associatedQuizQuestion: questionToAssign)
            
         }
-        print("GameView genererade \(chests.count) slumpade kistor med tilldelade frågor.")
+        print("GameView genererade \(chests.count) slumpade kistor för \(mapLevel.rawValue) nivå med tilldelade frågor.")
     }
 }

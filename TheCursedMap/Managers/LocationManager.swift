@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import UserNotifications
 import Combine
 import MapKit
 
@@ -33,6 +34,10 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
+        manager.distanceFilter = 5 // Uppdatera plats var 5:e meter t.ex.
+        
+        // Be om notisbehörighet direkt vid initiering
+        requestNotificationPermission()
     }
     
     // Starta uppdateringar av användarens plats
@@ -112,5 +117,96 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
                 NotificationCenter.default.post(name: .chestFound, object: nil, userInfo: ["chestId": chest.id])
             }
         }
+    }
+    
+    // ---
+    // MARK: - Notishantering
+    // ---
+
+    // Metod för att be om notisbehörighet
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Notisbehörighet beviljad.")
+            } else if let error = error {
+                print("Fel vid begäran om notisbehörighet: \(error.localizedDescription)")
+            } else {
+                print("Notisbehörighet nekad.")
+            }
+        }
+    }
+
+    // Funktion för påminnelsenotis
+    func scheduleDailyReminderNotification() {
+        // Kontrollera om notisbehörighet är beviljad först
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .notDetermined:
+                self.requestNotificationPermission() // Försöker begära behörighet igen
+                print("Notisbehörighet: Inte bestämd än. Försöker begära igen.")
+                return // Avbryt schemaläggning tills behörighet är satt
+            case .denied:
+                print("Notisbehörighet: NEKAD av användaren. Notiser kommer inte att visas.")
+                return // Avbryt schemaläggning
+            case .authorized:
+                print("Notisbehörighet: BEVILJAD. Fortsätter med schemaläggning.")
+            case .provisional, .ephemeral:
+                print("Notisbehörighet: Temporär/Effemär. Fortsätter med schemaläggning.")
+            @unknown default:
+                print("Notisbehörighet: Okänd status.")
+                return
+            }
+
+            // --- Notis 1: Efter 3 sekunder ---
+            let identifier1 = "firstChestReminder"
+            // Ta bort eventuella tidigare schemalagda/levererade notiser med denna identifierare
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier1])
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [identifier1])
+
+            let content1 = UNMutableNotificationContent()
+            content1.title = "Kistorna väntar!"
+            content1.body = "Öppna din kista idag och hitta nya skatter!"
+            content1.sound = UNNotificationSound.default
+
+            let trigger1 = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
+            let request1 = UNNotificationRequest(identifier: identifier1, content: content1, trigger: trigger1)
+
+            UNUserNotificationCenter.current().add(request1) { error in
+                if let error = error {
+                    print("FEL: Kunde INTE schemalägga första notisen: \(error.localizedDescription)")
+                } else {
+                    print("SUCCESS: Första notisen schemalagd om 3 sekunder.")
+                }
+            }
+
+            // --- Notis 2: Efter 30 sekunder ---
+            let identifier2 = "secondChestReminder"
+            // Ta bort eventuella tidigare schemalagda/levererade notiser med denna identifierare
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier2])
+            UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [identifier2])
+
+            let content2 = UNMutableNotificationContent()
+            content2.title = "Har du glömt en skattkista?"
+            content2.body = "Skynda dig, din skatt väntar inte för evigt!"
+            content2.sound = UNNotificationSound.default // Standardljud för notisen
+
+            let trigger2 = UNTimeIntervalNotificationTrigger(timeInterval: 30, repeats: false) // Denna notis kommer efter totalt 30 sekunder
+
+            let request2 = UNNotificationRequest(identifier: identifier2, content: content2, trigger: trigger2)
+
+            UNUserNotificationCenter.current().add(request2) { error in
+                if let error = error {
+                    print("FEL: Kunde INTE schemalägga andra notisen: \(error.localizedDescription)")
+                } else {
+                    print("SUCCESS: Andra notisen schemalagd om 30 sekunder.")
+                }
+            }
+        }
+    }
+
+    // Funktion för att avbryta en specifik notis 
+    func cancelDailyReminderNotification() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["dailyChestReminder"])
+        print("Daglig påminnelsenotis avbruten.")
     }
 }

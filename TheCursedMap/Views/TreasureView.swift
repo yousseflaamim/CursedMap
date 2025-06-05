@@ -71,10 +71,22 @@ struct TreasureView: View {
                 Spacer()
            
                 List{
-                    HStack{
-                        Image("openChest")
-                        Text("Första kistan öpnnad nära göta ....")
-                            .font(.system(size: 16, weight: .medium, design: .serif))
+                    ForEach(treasureViewModel.collectibles) { item in
+                        HStack {
+                            Image(item.imageName)
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                            Spacer()
+                            VStack{
+                                Text("\(item.name): \(item.currentCount) / \(item.requiredCount)")
+                                    .font(.system(size: 18, weight: .medium, design: .serif))
+                                
+                                Text("Collection reward: \(item.reward) coins")
+                                    .font(.system(size: 16, weight: .medium, design: .serif))
+                                Text("Collectibles level: \(item.level)")
+                                    .font(.system(size: 16, weight: .medium, design: .serif))
+                            }
+                        }
                     }
                     .listRowBackground(Color.gray)
                     .padding()

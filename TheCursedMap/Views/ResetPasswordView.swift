@@ -42,6 +42,7 @@ struct ResetPasswordView: View {
                 CustomTextField(text: $email, placeHolder: "Enter your email", image: "envelope")
                 
                 CustomButton(label: isLoading ? "Sending..." : "Send Reset Link") {
+                    SoundManager.shared.playButtonSound(named: "click-click")
                     resetPassword()
                 }
                 .disabled(isLoading)

@@ -10,19 +10,42 @@ import SwiftUI
 enum AppRoute: Hashable {
     case profile
     case treasure
-    case map
+    case map(MapLevel)
     case shop
+}
+
+enum MapLevel: String, CaseIterable {
+    case small = "Small"
+    case medium = "Medium"
+    case big = "Big"
+    
+    var chestCount: Int {
+        switch self {
+        case .small: return 3
+        case .medium: return 5
+        case .big: return 8
+        }
+    }
+    
+    var spawnRadius: Double {
+        switch self {
+        case .small: return 0.003  // ~300m radius
+        case .medium: return 0.005 // ~500m radius
+        case .big: return 0.008    // ~800m radius
+        }
+    }
 }
 
 struct StartView: View {
     @State var showInfo = false
     @State var showProfile = false
+    @State var showLevelSelection = false
     @State private var path = NavigationPath()
 
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
-                // Bakground
+                // Background
                 LinearGradient(
                     gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray"), Color("GrayBlack")]),
                     startPoint: .top,
@@ -34,7 +57,7 @@ struct StartView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            SoundManager.shared.playSound(named: "click-click")
+                            SoundManager.shared.playButtonSound(named: "click-click")
                             path.append(AppRoute.shop)
                         }) {
                             ZStack {
@@ -74,7 +97,7 @@ struct StartView: View {
                     
                     Button {
                         SoundManager.shared.playButtonSound(named: "click-click")
-                        path.append(AppRoute.map)
+                        showLevelSelection = true
                     } label: {
                         Text("Start Map")
                             .font(.system(size: 24, weight: .medium, design: .serif))
@@ -93,7 +116,7 @@ struct StartView: View {
                     }
                     .padding(.bottom)
                     
-                    // NavigationLink for TreasureView, comes whit a backbotton
+                    // NavigationLink for TreasureView
                     Button {
                         SoundManager.shared.playButtonSound(named: "click-click")
                         path.append(AppRoute.treasure)
@@ -176,7 +199,62 @@ struct StartView: View {
                     SoundManager.shared.playBackGroundSound(named: "backgroundMusic")
                 }
 
-                // Popup overlay – Shows upon over all.
+                // Level Selection Popup
+                if showLevelSelection {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 20) {
+                        Text("Select Map Size")
+                            .font(.system(size: 24, weight: .bold, design: .serif))
+                            .foregroundColor(Color.black)
+
+                        ForEach(MapLevel.allCases, id: \.self) { level in
+                            Button {
+                                SoundManager.shared.playButtonSound(named: "click-click")
+                                showLevelSelection = false
+                                path.append(AppRoute.map(level))
+                            } label: {
+                                VStack {
+                                    Text(level.rawValue)
+                                        .font(.system(size: 20, weight: .medium, design: .serif))
+                                        .foregroundColor(.gray)
+                                    Text("(\(level.chestCount) chests)")
+                                        .font(.system(size: 14, weight: .regular, design: .serif))
+                                        .foregroundColor(.black)
+                                }
+                                .frame(width: 200, height: 50)
+                                .background(
+                                    LinearGradient(gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray")]),
+                                                   startPoint: .top,
+                                                   endPoint: .bottom)
+                                )
+                                .cornerRadius(15)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .stroke(Color.black, lineWidth: 1)
+                                )
+                            }
+                        }
+
+                        Button("Cancel") {
+                            showLevelSelection = false
+                            SoundManager.shared.playButtonSound(named: "click-click")
+                        }
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+                        .padding()
+                        .foregroundColor(.black)
+                        .background(Color(.darkGray))
+                        .cornerRadius(10)
+                    }
+                    .padding()
+                    .frame(width: 300)
+                    .background(Color(.darkGray))
+                    .cornerRadius(16)
+                    .shadow(radius: 10)
+                }
+
+                // Info Popup
                 if showInfo {
                     Color.black.opacity(0.4)
                         .ignoresSafeArea()
@@ -217,9 +295,9 @@ struct StartView: View {
                        ProfileView()
                    case .treasure:
                        TreasureView()
-                   case.map:
-                       GameView()
-                   case.shop:
+                   case .map(let level):
+                       GameView(mapLevel: level)
+                   case .shop:
                        ShopView()
                    }
                }
