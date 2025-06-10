@@ -7,8 +7,7 @@
 
 
 import Foundation
-
-import Foundation
+import UIKit
 
 protocol AuthServiceProtocol {
     func login(email: String, password: String, completion: @escaping (Result<User, Error>) -> Void)
@@ -19,5 +18,7 @@ protocol AuthServiceProtocol {
     func logout()
     func currentUser() -> User?
     func deleteAccount(completion: @escaping (Result<Bool, Error>) -> Void)
+    func loginWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<User, Error>) -> Void)
+
 }
 

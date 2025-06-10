@@ -16,6 +16,8 @@
 		3F23DA5B2DD892B400A94A55 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 3F23DA5A2DD892B400A94A55 /* FirebaseMessaging */; };
 		3F23DA5D2DD892B400A94A55 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F23DA5C2DD892B400A94A55 /* FirebaseStorage */; };
 		3F55512A2DDE3F4C00606D98 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 3F5551292DDE3F4C00606D98 /* ProgressHUD */; };
+		3FE9E6ED2DF82DEB008DC7E2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 3FE9E6EC2DF82DEB008DC7E2 /* GoogleSignIn */; };
+		3FE9E6EF2DF82DEB008DC7E2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3FE9E6EE2DF82DEB008DC7E2 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,10 +84,12 @@
 				3F23DA5B2DD892B400A94A55 /* FirebaseMessaging in Frameworks */,
 				3F55512A2DDE3F4C00606D98 /* ProgressHUD in Frameworks */,
 				3F23DA572DD892B400A94A55 /* FirebaseFunctions in Frameworks */,
+				3FE9E6ED2DF82DEB008DC7E2 /* GoogleSignIn in Frameworks */,
 				3F23DA512DD892B400A94A55 /* FirebaseCore in Frameworks */,
 				3F23DA5D2DD892B400A94A55 /* FirebaseStorage in Frameworks */,
 				3F23DA4F2DD892B400A94A55 /* FirebaseAuth in Frameworks */,
 				3F23DA592DD892B400A94A55 /* FirebaseInAppMessaging-Beta in Frameworks */,
+				3FE9E6EF2DF82DEB008DC7E2 /* GoogleSignInSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +159,8 @@
 				3F23DA5A2DD892B400A94A55 /* FirebaseMessaging */,
 				3F23DA5C2DD892B400A94A55 /* FirebaseStorage */,
 				3F5551292DDE3F4C00606D98 /* ProgressHUD */,
+				3FE9E6EC2DF82DEB008DC7E2 /* GoogleSignIn */,
+				3FE9E6EE2DF82DEB008DC7E2 /* GoogleSignInSwift */,
 			);
 			productName = TheCursedMap;
 			productReference = 805AE3682DD46FB700B7A19E /* TheCursedMap.app */;
@@ -241,6 +247,7 @@
 			packageReferences = (
 				3F23DA4D2DD892B400A94A55 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				3F5551282DDE3F4C00606D98 /* XCRemoteSwiftPackageReference "ProgressHUD" */,
+				3FE9E6EB2DF82DEB008DC7E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 805AE3692DD46FB700B7A19E /* Products */;
@@ -446,6 +453,7 @@
 				DEVELOPMENT_TEAM = 9BMSR92HGP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TheCursedMap/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -476,6 +484,7 @@
 				DEVELOPMENT_TEAM = 9BMSR92HGP;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TheCursedMap/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Vi behöver tillåtelse att använda din plats";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -625,6 +634,14 @@
 				minimumVersion = 14.1.3;
 			};
 		};
+		3FE9E6EB2DF82DEB008DC7E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -672,6 +689,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3F5551282DDE3F4C00606D98 /* XCRemoteSwiftPackageReference "ProgressHUD" */;
 			productName = ProgressHUD;
+		};
+		3FE9E6EC2DF82DEB008DC7E2 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FE9E6EB2DF82DEB008DC7E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		3FE9E6EE2DF82DEB008DC7E2 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FE9E6EB2DF82DEB008DC7E2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
