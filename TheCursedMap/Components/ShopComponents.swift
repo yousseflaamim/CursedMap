@@ -70,7 +70,7 @@ struct JumpscareView: View {
                 .scaledToFit()
                 .scaleEffect(scale)
                 .onAppear {
-                    SoundManager.shared.playSound(named: "AvatarScream")
+                    SoundManager.shared.playEffectSound(named: "AvatarScream")
                     withAnimation(.easeIn(duration: 0.3)) {
                         scale = 5.0
                     }

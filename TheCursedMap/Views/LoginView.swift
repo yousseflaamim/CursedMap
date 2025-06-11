@@ -12,6 +12,7 @@ struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
     @State private var path = NavigationPath()
     @State private var showVideo = false
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
     
     var onLoginSuccess: () -> Void
     
@@ -70,22 +71,21 @@ struct LoginView: View {
                         CustomButton(label: viewModel.isLoading ? "Logging in..." : "Login") {
                             SoundManager.shared.playButtonSound(named: "click-click")
                             // HUDManager.showLoading("Is logging in...")
-                          
+                            
                             viewModel.login { success in
                            
                                     if success {
                                         HUDManager.showSuccess("Welcome")
                                         showVideo = true
-                                        onLoginSuccess()
+                           
                                     } else {
                                         HUDManager.showError("Login failed")
                                     }
                                 }
-                            
-                                
                         }
                         .disabled(viewModel.isLoading)
                         .frame(width: 180)
+                        
                     }
                     .padding(20)
                     
@@ -115,6 +115,7 @@ struct LoginView: View {
                     .padding()
                 }
                 .padding()
+               
             }
             .navigationDestination(for: AuthRoute.self) { route in
                 switch route {
@@ -127,11 +128,25 @@ struct LoginView: View {
                 }
             }
             
-
-        }.fullScreenCover(isPresented: $showVideo) {
-            WelcomeView(show: $showVideo)}
-        .tint(.black)
-        
+                // Show WelcomView in 1 second with a boo sound and then loggin.
+            .overlay(
+                Group {
+                    if showVideo {
+                        WelcomeView {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                isLoggedIn = true
+                            }
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color.black.opacity(0.001))
+                        .edgesIgnoringSafeArea(.all)
+                        .transition(.opacity)
+                        .zIndex(10)
+                    }
+                }
+            )
+        }
+     
     }
        
 }

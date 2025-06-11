@@ -45,6 +45,7 @@ struct StartView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack {
+                
                 // Background
                 LinearGradient(
                     gradient: Gradient(colors: [Color("GrayBlack"), Color("Gray"), Color("GrayBlack")]),
@@ -52,7 +53,7 @@ struct StartView: View {
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
-                
+           
                 VStack {
                     HStack {
                         Spacer()

@@ -28,9 +28,11 @@ class SoundManager: ObservableObject  {
     @Published var isButtonSoundEnabled: Bool {
         didSet { UserDefaults.standard.set(isButtonSoundEnabled, forKey: "isButtonSoundEnabled") }
     }
-
+    
     @Published var isEffectSoundEnabled: Bool {
-        didSet { UserDefaults.standard.set(isEffectSoundEnabled, forKey: "isEffectSoundEnabled") }
+        didSet {
+            UserDefaults.standard.set(isEffectSoundEnabled, forKey: "isEffectSoundEnabled")
+        }
     }
     
     // this is to read users choise sound on/off from UserDeafaults when the app starts aigain
@@ -41,12 +43,27 @@ class SoundManager: ObservableObject  {
            self.isEffectSoundEnabled = UserDefaults.standard.bool(forKey: "isEffectSoundEnabled")
       }
     
+    // play click sound when user presses buttons
     func playButtonSound(named name: String){
+        // check users settings
         guard isSoundEnabled && isButtonSoundEnabled else { return }
-           playSound(named: name)
+
+           guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else {
+               print("Sound file \(name).mp3 not found")
+               return
+           }
+
+           do {
+               player = try AVAudioPlayer(contentsOf: url)
+               player?.prepareToPlay()
+               player?.play()
+           } catch {
+               print("Failed to play button sound: \(error.localizedDescription)")
+           }
     }
-    
+    // plays background music
     func playBackGroundSound(named name: String, ext: String = "mp3"){
+        //check users settings
         guard isSoundEnabled && isBackgroundSoundEnabled else { return }
            
            if backgroundPlayer?.isPlaying == true { return }
@@ -66,7 +83,11 @@ class SoundManager: ObservableObject  {
                print("Misslyckades spela musik: \(error.localizedDescription)")
            }
     }
+    // plays sound effects
     func playEffectSound(named name: String, completion: (() -> Void)? = nil) {
+        //check users settings
+        guard isSoundEnabled && isEffectSoundEnabled else { return }
+        
         guard let url = Bundle.main.url(forResource: name, withExtension: "mp3") else { return }
 
         do {
@@ -80,34 +101,10 @@ class SoundManager: ObservableObject  {
 
         } catch {
             print("Kunde inte spela ljud: \(error)")
-            completion?() // Säkerhetskopia
+            completion?()
         }
     }
-    
-  /*  func playEffectSound(named name: String){
-        guard isSoundEnabled && isEffectSoundEnabled else { return }
-            playSound(named: name)
-    }*/
-    func playSound(named: String, ext: String = "mp3"){
-        
-       // guard isSoundEnabled else { return }
-        
-        guard let url = Bundle.main.url(forResource: named, withExtension: ext) else {
-         print("Sound file \(named).\(ext) not found")
-            return
-            }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.prepareToPlay()
-            player?.play()
-        } catch {
-            print("Failed to play sound: \(error.localizedDescription)")
-        }
-    }
-    
-    func stopSound() {
-            player?.stop()
-        }
+    // stops backround sound or all sound
     func stopBackgroundMusic() {
         backgroundPlayer?.stop()
         backgroundPlayer = nil
@@ -119,6 +116,7 @@ class SoundManager: ObservableObject  {
         player?.stop()
         player = nil
     }
+    // check and save users choice of sound
     func toggleBackgroundSound() {
         isBackgroundSoundEnabled.toggle()
            

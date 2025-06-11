@@ -94,6 +94,7 @@ struct GameView: View {
             // if haunted, a timer on two minuts apear and if you dont open a chest within this time you will lose 20% of earned coins.
             if treasureVM.isHaunted {
                  VStack {
+                     Spacer()
                      HStack {
                          Image(systemName: "eye.trianglebadge.exclamationmark.fill")
                              .foregroundColor(.red)
@@ -101,14 +102,13 @@ struct GameView: View {
                              .font(.headline)
                              .foregroundColor(.red)
                      }
-                     .padding(10)
-                     .background(Color.black.opacity(0.75))
-                     .cornerRadius(10)
-                     .padding(.top, 50)
-                     Spacer()
+                     .padding(12)
+                            .background(Color.black.opacity(0.85))
+                            .cornerRadius(12)
+                            .padding(.bottom, 20)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .animation(.easeInOut, value: treasureVM.hauntingTimeRemaining)
                  }
-                 .transition(.opacity)
-                 .animation(.easeInOut, value: treasureVM.hauntingTimeRemaining)
              }
             if let message = treasureVM.hauntingMessage {
                 VStack {
@@ -130,10 +130,10 @@ struct GameView: View {
                 }
                 .animation(.easeInOut, value: treasureVM.hauntingMessage)
             }
-
+            
             // Level indicator overlay
             VStack {
-                HStack {
+               HStack {
                     VStack(alignment: .leading) {
                         Text("Map Size: \(mapLevel.rawValue)")
                             .font(.system(size: 16, weight: .bold, design: .serif))
