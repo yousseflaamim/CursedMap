@@ -34,7 +34,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter = 5 // Uppdatera plats var 5:e meter t.ex.
+       
         
         // Be om notisbehörighet direkt vid initiering
         requestNotificationPermission()
