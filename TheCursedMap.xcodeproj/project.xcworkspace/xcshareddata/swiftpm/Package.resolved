@@ -1,5 +1,5 @@
 {
-  "originHash" : "6f114678ae4a0eb6aa2c78e4796a092d87719eca6fc3e3a0cd5497064bee5852",
+  "originHash" : "b741908a8fb120c71d15e94404c59fee18e8811f30c7e72284d72f5f5db482d0",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -89,6 +89,15 @@
       "state" : {
         "revision" : "a2ab612cb980066ee56d90d60d8462992c07f24b",
         "version" : "3.5.0"
+      }
+    },
+    {
+      "identity" : "gtmappauth",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/GTMAppAuth.git",
+      "state" : {
+        "revision" : "5d7d66f647400952b1758b230e019b07c0b4b22a",
+        "version" : "4.1.1"
       }
     },
     {

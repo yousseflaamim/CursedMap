@@ -102,13 +102,13 @@ struct LoginView: View {
                     
                     // Email sign up
                     CustomButton(label: "Sign up with Email", iconName: "envelope") {
-                        SoundManager.shared.playSound(named: "click-click")
+                        SoundManager.shared.playButtonSound(named: "click-click")
                         path.append(AuthRoute.register)
                     }
                     
                     // Google Sign In button
                     CustomButton(label: "Continue with Google", iconImage: Image("google")) {
-                        SoundManager.shared.playSound(named: "click-click")
+                        SoundManager.shared.playButtonSound(named: "click-click")
                         guard let rootVC = UIApplication.shared.connectedScenes
                             .compactMap({ $0 as? UIWindowScene })
                             .first?.windows
@@ -164,10 +164,10 @@ struct LoginView: View {
      
 
         }
-        .tint(.black)
+       // .tint(.black)
 
     }
-}
+
 
 enum AuthRoute: Hashable {
     case register
