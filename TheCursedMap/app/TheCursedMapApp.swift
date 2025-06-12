@@ -22,7 +22,7 @@ struct TheCursedMapApp: App {
             } else {
                 LoginView {
                     isLoggedIn = true
-                }
+                }.id(UUID())
             }
         }
     }

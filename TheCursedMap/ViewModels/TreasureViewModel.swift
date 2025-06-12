@@ -18,10 +18,8 @@ class TreasureViewModel: ObservableObject {
         var openedTreasure: Int
         var collectibles: [Collectible]
     }
-    @Published var hauntingTimeRemaining: Int = 0
+   
 
-    private var hauntTimer: Timer?
-    private var hauntCountdownTimer: Timer?
     @Published var openedTreasure: Int = 0
     @Published var coins: Int = 0
     @Published var level: Int = 0
@@ -31,9 +29,13 @@ class TreasureViewModel: ObservableObject {
     @Published var collectibles: [Collectible] = []
     @Published var lastUnlockedCollectibleName: String? = nil  // to print in TreasureRewardView
     @Published var lastLeveledUpCollectible: Collectible? = nil // to print in TreasureRewardView
+    
+    // Has to do with haunting functions, and to show user if haunted and how much time remains to open next chest, else user loses 20% of collected coins.
     @Published var isHaunted: Bool = false
     @Published var shouldPlayHauntedSound: Bool = false
     @Published var hauntingMessage: String? = nil
+    @Published var hauntingTimeRemaining: Int = 0
+    private var hauntCountdownTimer: Timer?
     
     init(){
         loadProgressFromFirestore()
@@ -49,15 +51,12 @@ class TreasureViewModel: ObservableObject {
     
        func openChest() {
            if isHaunted {
-                  print("Du var haunted! Förlorade eventuell belöning.")
-                  isHaunted = false
-                  shouldPlayHauntedSound = false
-               hauntTimer?.invalidate()
-               hauntCountdownTimer?.invalidate()
-               hauntTimer = nil
-               hauntCountdownTimer = nil
-               hauntingTimeRemaining = 0
-               hauntingMessage = "Du är inte längre haunted!"
+                  isHaunted = false  // if user was haunted, user is now not haunted
+                  shouldPlayHauntedSound = false // not playing haunted sound anymore
+                  hauntCountdownTimer?.invalidate()// Stop timer
+                  hauntCountdownTimer = nil
+                  hauntingTimeRemaining = 0  // resett countdown timer
+                  hauntingMessage = "Du är inte längre haunted!" // user get a messagae
                   saveProgressToFirestore()
                   return
               }
@@ -69,38 +68,37 @@ class TreasureViewModel: ObservableObject {
            applyHauntingChance()
            saveProgressToFirestore()
        }
-    
+    /**
+     Function that random by 20% chance get user haunted, if user gets haunted a timers sets and counting down. Gives user a chance to get unhaunted if user open a chest before times runs out, if not user will lose coins.
+     */
     func applyHauntingChance() {
-        let chance = Int.random(in: 1...100)
-        if chance <= 20 {  // 20% chance to be Haunted
+        let chance = Int.random(in: 1...10)
+        if chance <= 10 {  // 20% chance to be Haunted
             isHaunted = true
             shouldPlayHauntedSound = true
-            hauntingTimeRemaining = 120
+            hauntingTimeRemaining = 360 // time remanining
          
             print("You are haunted! Nästa kista blir läskig...")
-            
-            hauntTimer?.invalidate()
+
             hauntCountdownTimer?.invalidate()
-   
-            hauntTimer = Timer.scheduledTimer(withTimeInterval: 120.0, repeats: false) { [weak self] _ in
-                guard let self = self, self.isHaunted else { return }
-                self.applyHauntingPenalty()
-            }
             hauntCountdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 guard let self = self else { return }
+                
                 if self.hauntingTimeRemaining > 0 {
                     self.hauntingTimeRemaining -= 1
                 } else {
                     self.hauntCountdownTimer?.invalidate()
+                    self.applyHauntingPenalty()
                     
                 }
             }
         }
     }
+    
     func applyHauntingPenalty() {
         print("Du öppnade ingen kista i tid!")
 
-        let lostCoins = Int(Double(coins) * 0.2)
+        let lostCoins = Int(Double(coins) * 0.2) // User didn´t open chest in time and loses 20% of collected coins
         coins = max(coins - lostCoins, 0)
         isHaunted = false
         shouldPlayHauntedSound = false
@@ -130,7 +128,7 @@ class TreasureViewModel: ObservableObject {
     }
     func grantLevelUpReward() {
       
-        let bonus = 5 // givs user a tiny bonus in fform of coins when levelUp.
+        let bonus = 5 // givs user a tiny bonus in form of coins when levelUp.
         coins += bonus
         levelUpReward = bonus
         didLevelUp = true
@@ -152,7 +150,9 @@ class TreasureViewModel: ObservableObject {
         ]
        
     }
-    
+    /**
+     Function gives user a random collectible when user levels up based on xp. collectible can also level upp. and when it does user get a reward. required amount also increase when it levels up.
+     */
     func rewardRandomCollectible() {
         guard !collectibles.isEmpty else { return }
         

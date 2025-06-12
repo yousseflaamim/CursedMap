@@ -35,7 +35,7 @@ class LoginViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success:
-                    self?.isLoggedIn = true
+                   // self?.isLoggedIn = true // kan inte vara här utan flyttad till LoginView för att kunna visa welcomeView
                     completion(true)
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
