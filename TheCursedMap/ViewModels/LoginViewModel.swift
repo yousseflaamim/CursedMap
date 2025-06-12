@@ -56,6 +56,24 @@ class LoginViewModel: ObservableObject {
         }
         return true
     }
+    //loginwithgoogle
+      
+      func loginWithGoogle(presenting viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+          isLoading = true
+          authService.loginWithGoogle(presenting: viewController) { [weak self] result in
+              DispatchQueue.main.async {
+                  self?.isLoading = false
+                  switch result {
+                  case .success:
+                      self?.isLoggedIn = true
+                      completion(true)
+                  case .failure(let error):
+                      self?.errorMessage = error.localizedDescription
+                      completion(false)
+                  }
+              }
+          }
+      }
     
     //restpassword
     func resetPassword(completion: @escaping (Bool, String?) -> Void) {

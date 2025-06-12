@@ -9,6 +9,8 @@
 import Foundation
 import FirebaseAuth
 import FirebaseStorage
+import GoogleSignIn
+import FirebaseCore
 
 class FirebaseAuthService: AuthServiceProtocol {
     
@@ -29,6 +31,51 @@ class FirebaseAuthService: AuthServiceProtocol {
             completion(.success(user))
         }
     }
+    // MARK: - Login with Google
+    
+       func loginWithGoogle(presenting viewController: UIViewController, completion: @escaping (Result<User, Error>) -> Void) {
+           
+           guard let clientID = FirebaseApp.app()?.options.clientID else {
+               completion(.failure(NSError(domain: "GoogleSignIn", code: -1, userInfo: [NSLocalizedDescriptionKey: "Missing Client ID"])))
+               return
+           }
+
+           let config = GIDConfiguration(clientID: clientID)
+
+           GIDSignIn.sharedInstance.configuration = config
+
+           GIDSignIn.sharedInstance.signIn(withPresenting: viewController) { result, error in
+               if let error = error {
+                   completion(.failure(error))
+                   return
+               }
+
+               guard let user = result?.user,
+                     let idToken = user.idToken?.tokenString else {
+                   completion(.failure(NSError(domain: "GoogleSignIn", code: -1, userInfo: [NSLocalizedDescriptionKey: "Google Sign-In data missing idToken."])))
+                   return
+               }
+
+               let accessToken = user.accessToken.tokenString
+
+               let credential = GoogleAuthProvider.credential(withIDToken: idToken, accessToken: accessToken)
+
+               Auth.auth().signIn(with: credential) { authResult, error in
+                   if let error = error {
+                       completion(.failure(error))
+                       return
+                   }
+
+                   guard let firebaseUser = authResult?.user,
+                         let appUser = User(from: firebaseUser) else {
+                       completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "User conversion failed."])))
+                       return
+                   }
+
+                   completion(.success(appUser))
+               }
+           }
+       }
     
     // MARK: - Register
     func register(email: String, password: String, displayName: String, completion: @escaping (Result<User, Error>) -> Void) {
