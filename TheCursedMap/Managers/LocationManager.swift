@@ -34,7 +34,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter = 5 // Uppdatera plats var 5:e meter t.ex.
+       
         
         // Be om notisbehörighet direkt vid initiering
         requestNotificationPermission()
@@ -105,7 +105,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
             let chestLocation = CLLocation(latitude: chest.coordinate.latitude, longitude: chest.coordinate.longitude)
             let distance = userLocation.distance(from: chestLocation) // Beräkna avståndet i meter
 
-            let detectionRadius: CLLocationDistance = 500.0 // Definiera hur nära användaren måste vara
+            let detectionRadius: CLLocationDistance = 15.0 // Definiera hur nära användaren måste vara
 
             if distance < detectionRadius {
                 print("LocationManager: Kista hittad! Avstånd: \(String(format: "%.2f", distance)) meter till kista: \(chest.name) (ID: \(chest.id))")

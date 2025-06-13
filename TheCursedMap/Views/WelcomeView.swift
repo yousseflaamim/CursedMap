@@ -9,16 +9,17 @@ import SwiftUI
 import AVKit
 
 struct WelcomeView: View {
-    @Binding var show: Bool
+   
     @State private var scale: CGFloat = 0.6
     @State private var opacity: Double = 0.0
+    var onDismiss: () -> Void = {}
 
     var body: some View {
            ZStack {
                Color.black.opacity(0.7).ignoresSafeArea()
 
                VStack {
-                   
+                   // Show the creepy spider for 1 second with boo sound. also zpider zooms in before it disapears for a creepier effect
                    Image("creepySpider")
                        .resizable()
                        .scaledToFit()
@@ -31,20 +32,23 @@ struct WelcomeView: View {
                                scale = 1.8
                                opacity = 1.0
                            }
-                           DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                              
-                               withAnimation(.easeIn(duration: 0.5)) {
-                                   opacity = 0.0
-                               }
-                               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                   show = false
-                               }
+                          
+                               DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                withAnimation(.easeIn(duration: 0.5)) {
+                                opacity = 0.0
+                                }
+                                                          
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                onDismiss()
+                                   
+                             }
+                   
                            }
                        }
+                    }
                }
            }
        }
-}
 
 /*#Preview {
     WelcomeView()

@@ -16,10 +16,7 @@ struct ProfileView: View {
     @StateObject var profileViewModel = ProfileViewModel()
     @StateObject var treasureViewModel = TreasureViewModel()
     @StateObject private var viewModel = ShopViewModel()
-    @StateObject private var soundManager = SoundManager.shared
-    
-    
-  
+
     var body: some View {
         // in use of progressView for xp
         let maxXpPerLevel = 150

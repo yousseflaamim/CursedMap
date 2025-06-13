@@ -52,6 +52,7 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
+            
             Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: false, annotationItems: mapItems) { item in
                 MapAnnotation(coordinate: item.coordinate) {
                     switch item {
@@ -70,14 +71,69 @@ struct GameView: View {
                             .clipShape(Circle())
                             .shadow(radius: 5)
                             .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                        // 👻 Haunted-indikator
+                                      if treasureVM.isHaunted {
+                                          
+                                          Circle()
+                                              .fill(Color.red)
+                                              .frame(width: 14, height: 14)
+                                              .offset(x: 18, y: -18)
+                                              .overlay(
+                                                  Text("👁")
+                                                      .font(.caption)
+                                              )
+                                              .transition(.opacity)
+                                              .animation(.easeInOut, value: treasureVM.isHaunted)
+                                          
+                                      }
                     }
                 }
             }
             .edgesIgnoringSafeArea(.all)
 
+            // if haunted, a timer on two minuts apear and if you dont open a chest within this time you will lose 20% of earned coins.
+            if treasureVM.isHaunted {
+                 VStack {
+                     Spacer()
+                     HStack {
+                         Image(systemName: "eye.trianglebadge.exclamationmark.fill")
+                             .foregroundColor(.red)
+                         Text("Haunted! \(treasureVM.hauntingTimeRemaining)s kvar...")
+                             .font(.headline)
+                             .foregroundColor(.red)
+                     }
+                     .padding(12)
+                            .background(Color.black.opacity(0.85))
+                            .cornerRadius(12)
+                            .padding(.bottom, 20)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .animation(.easeInOut, value: treasureVM.hauntingTimeRemaining)
+                 }
+             }
+            if let message = treasureVM.hauntingMessage {
+                VStack {
+                    Spacer()
+                    Text(message)
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.black.opacity(0.8))
+                        .cornerRadius(12)
+                        .padding(.bottom, 80)
+                        .transition(.opacity)
+                        .onAppear {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                                treasureVM.hauntingMessage = nil
+                 
+                            }
+                        }
+                }
+                .animation(.easeInOut, value: treasureVM.hauntingMessage)
+            }
+            
             // Level indicator overlay
             VStack {
-                HStack {
+               HStack {
                     VStack(alignment: .leading) {
                         Text("Map Size: \(mapLevel.rawValue)")
                             .font(.system(size: 16, weight: .bold, design: .serif))
@@ -102,6 +158,7 @@ struct GameView: View {
                 Spacer()
             }
 
+
             if locationManager.userLocation == nil {
                 ProgressView("Laddar karta...")
                     .foregroundColor(.white)
@@ -120,6 +177,19 @@ struct GameView: View {
                 generateChests(around: location)
                 chestsGenerated = true
                 locationManager.setChests(chests)
+            }
+        }
+        .task(id: treasureVM.shouldPlayHauntedSound) {
+            if treasureVM.shouldPlayHauntedSound {
+                print("⏳ Fördröjer ljuduppspelning 0.2s...")
+                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 sek
+                SoundManager.shared.playEffectSound(named: "haunted")
+                print("🔊 Haunted-ljud spelas!")
+                
+                // Viktigt: återställ så ljudet inte spelas igen direkt
+                DispatchQueue.main.async {
+                    treasureVM.shouldPlayHauntedSound = false
+                }
             }
         }
         // Lyssnar efter notiser om hittade kistor från LocationManager
