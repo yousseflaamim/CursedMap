@@ -105,7 +105,7 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
             let chestLocation = CLLocation(latitude: chest.coordinate.latitude, longitude: chest.coordinate.longitude)
             let distance = userLocation.distance(from: chestLocation) // Beräkna avståndet i meter
 
-            let detectionRadius: CLLocationDistance = 500.0 // Definiera hur nära användaren måste vara
+            let detectionRadius: CLLocationDistance = 15.0 // Definiera hur nära användaren måste vara
 
             if distance < detectionRadius {
                 print("LocationManager: Kista hittad! Avstånd: \(String(format: "%.2f", distance)) meter till kista: \(chest.name) (ID: \(chest.id))")
