@@ -72,8 +72,8 @@ class TreasureViewModel: ObservableObject {
      Function that random by 20% chance get user haunted, if user gets haunted a timers sets and counting down. Gives user a chance to get unhaunted if user open a chest before times runs out, if not user will lose coins.
      */
     func applyHauntingChance() {
-        let chance = Int.random(in: 1...10)
-        if chance <= 10 {  // 20% chance to be Haunted
+        let chance = Int.random(in: 1...100)
+        if chance <= 20 {  // 20% chance to be Haunted
             isHaunted = true
             shouldPlayHauntedSound = true
             hauntingTimeRemaining = 360 // time remanining
